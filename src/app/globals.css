@@ -1,0 +1,915 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  /* TRON-specific custom colors */
+  --color-tron-cyan: #00f0ff;
+  --color-tron-magenta: #ff00aa;
+  --color-tron-dark: #0a0a0f;
+  --color-tron-dark-elevated: #0d0d18;
+  --color-tron-grid: rgba(0, 240, 255, 0.06);
+  --color-tron-glow: rgba(0, 240, 255, 0.4);
+}
+
+:root {
+  --radius: 0.625rem;
+
+  /* ═══════════════════════════════════════════
+     TRON — Dark mode only (light vars alias to dark)
+     ═══════════════════════════════════════════ */
+  --background: #0a0a0f;
+  --foreground: #e0f7fa;
+
+  --card: rgba(0, 240, 255, 0.03);
+  --card-foreground: #e0f7fa;
+
+  --popover: #0d0d18;
+  --popover-foreground: #e0f7fa;
+
+  --primary: #00f0ff;
+  --primary-foreground: #0a0a0f;
+
+  --secondary: #ff00aa;
+  --secondary-foreground: #0a0a0f;
+
+  --muted: rgba(0, 240, 255, 0.06);
+  --muted-foreground: rgba(0, 240, 255, 0.5);
+
+  --accent: rgba(0, 240, 255, 0.1);
+  --accent-foreground: #00f0ff;
+
+  --destructive: #ff2d55;
+
+  --border: rgba(0, 240, 255, 0.12);
+  --input: rgba(0, 240, 255, 0.15);
+  --ring: rgba(0, 240, 255, 0.5);
+
+  /* Chart colors — TRON palette */
+  --chart-1: #00f0ff;
+  --chart-2: #ff00aa;
+  --chart-3: #7b61ff;
+  --chart-4: #00ff88;
+  --chart-5: #ff6b35;
+
+  /* Sidebar */
+  --sidebar: #0a0a0f;
+  --sidebar-foreground: #e0f7fa;
+  --sidebar-primary: #00f0ff;
+  --sidebar-primary-foreground: #0a0a0f;
+  --sidebar-accent: rgba(0, 240, 255, 0.08);
+  --sidebar-accent-foreground: #00f0ff;
+  --sidebar-border: rgba(0, 240, 255, 0.1);
+  --sidebar-ring: rgba(0, 240, 255, 0.4);
+}
+
+.dark {
+  /* Mirror of :root — dark mode only app */
+  --background: #0a0a0f;
+  --foreground: #e0f7fa;
+
+  --card: rgba(0, 240, 255, 0.03);
+  --card-foreground: #e0f7fa;
+
+  --popover: #0d0d18;
+  --popover-foreground: #e0f7fa;
+
+  --primary: #00f0ff;
+  --primary-foreground: #0a0a0f;
+
+  --secondary: #ff00aa;
+  --secondary-foreground: #0a0a0f;
+
+  --muted: rgba(0, 240, 255, 0.06);
+  --muted-foreground: rgba(0, 240, 255, 0.5);
+
+  --accent: rgba(0, 240, 255, 0.1);
+  --accent-foreground: #00f0ff;
+
+  --destructive: #ff2d55;
+
+  --border: rgba(0, 240, 255, 0.12);
+  --input: rgba(0, 240, 255, 0.15);
+  --ring: rgba(0, 240, 255, 0.5);
+
+  --chart-1: #00f0ff;
+  --chart-2: #ff00aa;
+  --chart-3: #7b61ff;
+  --chart-4: #00ff88;
+  --chart-5: #ff6b35;
+
+  --sidebar: #0a0a0f;
+  --sidebar-foreground: #e0f7fa;
+  --sidebar-primary: #00f0ff;
+  --sidebar-primary-foreground: #0a0a0f;
+  --sidebar-accent: rgba(0, 240, 255, 0.08);
+  --sidebar-accent-foreground: #00f0ff;
+  --sidebar-border: rgba(0, 240, 255, 0.1);
+  --sidebar-ring: rgba(0, 240, 255, 0.4);
+}
+
+/* ═══════════════════════════════════════════
+   Base Layer
+   ═══════════════════════════════════════════ */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Force RTL on root */
+  html {
+    direction: rtl;
+  }
+
+  /* Selection highlight */
+  ::selection {
+    background: rgba(0, 240, 255, 0.25);
+    color: #ffffff;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   TRON Grid Background Pattern
+   ═══════════════════════════════════════════ */
+.tron-grid {
+  background-color: #0a0a0f;
+  background-image:
+    /* Major grid lines */
+    linear-gradient(rgba(0, 240, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.07) 1px, transparent 1px),
+    /* Minor grid lines */
+    linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+  background-size:
+    100px 100px,
+    100px 100px,
+    20px 20px,
+    20px 20px;
+  background-position:
+    -1px -1px,
+    -1px -1px,
+    -1px -1px,
+    -1px -1px;
+}
+
+/* Perspective grid floor effect */
+.tron-grid-perspective {
+  background-color: #0a0a0f;
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.1) 1px, transparent 1px);
+  background-size: 60px 60px;
+  transform: perspective(500px) rotateX(60deg);
+  transform-origin: center top;
+}
+
+/* ═══════════════════════════════════════════
+   Neon Glow Effects
+   ═══════════════════════════════════════════ */
+.neon-glow {
+  box-shadow:
+    0 0 5px rgba(0, 240, 255, 0.3),
+    0 0 10px rgba(0, 240, 255, 0.2),
+    0 0 20px rgba(0, 240, 255, 0.15),
+    0 0 40px rgba(0, 240, 255, 0.1);
+}
+
+.neon-glow-magenta {
+  box-shadow:
+    0 0 5px rgba(255, 0, 170, 0.3),
+    0 0 10px rgba(255, 0, 170, 0.2),
+    0 0 20px rgba(255, 0, 170, 0.15),
+    0 0 40px rgba(255, 0, 170, 0.1);
+}
+
+.neon-text {
+  color: #00f0ff;
+  text-shadow:
+    0 0 7px rgba(0, 240, 255, 0.6),
+    0 0 10px rgba(0, 240, 255, 0.4),
+    0 0 21px rgba(0, 240, 255, 0.3),
+    0 0 42px rgba(0, 240, 255, 0.2),
+    0 0 82px rgba(0, 240, 255, 0.1);
+}
+
+.neon-text-magenta {
+  color: #ff00aa;
+  text-shadow:
+    0 0 7px rgba(255, 0, 170, 0.6),
+    0 0 10px rgba(255, 0, 170, 0.4),
+    0 0 21px rgba(255, 0, 170, 0.3),
+    0 0 42px rgba(255, 0, 170, 0.2),
+    0 0 82px rgba(255, 0, 170, 0.1);
+}
+
+.neon-border {
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  box-shadow:
+    inset 0 0 10px rgba(0, 240, 255, 0.05),
+    0 0 5px rgba(0, 240, 255, 0.2),
+    0 0 10px rgba(0, 240, 255, 0.1);
+}
+
+.neon-border-magenta {
+  border: 1px solid rgba(255, 0, 170, 0.3);
+  box-shadow:
+    inset 0 0 10px rgba(255, 0, 170, 0.05),
+    0 0 5px rgba(255, 0, 170, 0.2),
+    0 0 10px rgba(255, 0, 170, 0.1);
+}
+
+/* ═══════════════════════════════════════════
+   Interactive Neon States
+   ═══════════════════════════════════════════ */
+.neon-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neon-hover:hover {
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow:
+    0 0 10px rgba(0, 240, 255, 0.3),
+    0 0 20px rgba(0, 240, 255, 0.2),
+    0 0 40px rgba(0, 240, 255, 0.1);
+}
+
+.neon-focus:focus {
+  outline: none;
+  border-color: rgba(0, 240, 255, 0.6);
+  box-shadow:
+    0 0 0 2px rgba(0, 240, 255, 0.15),
+    0 0 15px rgba(0, 240, 255, 0.3),
+    0 0 30px rgba(0, 240, 255, 0.15);
+}
+
+.neon-active:active {
+  box-shadow:
+    0 0 5px rgba(0, 240, 255, 0.5),
+    0 0 10px rgba(0, 240, 255, 0.3),
+    inset 0 0 10px rgba(0, 240, 255, 0.1);
+  transform: scale(0.98);
+}
+
+/* ═══════════════════════════════════════════
+   Card Glow Effects
+   ═══════════════════════════════════════════ */
+.card-glow {
+  background: rgba(0, 240, 255, 0.03);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-glow:hover {
+  background: rgba(0, 240, 255, 0.06);
+  border-color: rgba(0, 240, 255, 0.3);
+  box-shadow:
+    0 0 15px rgba(0, 240, 255, 0.15),
+    0 0 30px rgba(0, 240, 255, 0.08),
+    inset 0 0 15px rgba(0, 240, 255, 0.03);
+}
+
+.card-glow-magenta {
+  background: rgba(255, 0, 170, 0.03);
+  border: 1px solid rgba(255, 0, 170, 0.1);
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-glow-magenta:hover {
+  background: rgba(255, 0, 170, 0.06);
+  border-color: rgba(255, 0, 170, 0.3);
+  box-shadow:
+    0 0 15px rgba(255, 0, 170, 0.15),
+    0 0 30px rgba(255, 0, 170, 0.08),
+    inset 0 0 15px rgba(255, 0, 170, 0.03);
+}
+
+/* ═══════════════════════════════════════════
+   Animations
+   ═══════════════════════════════════════════ */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 5px rgba(0, 240, 255, 0.3),
+      0 0 10px rgba(0, 240, 255, 0.2);
+    opacity: 1;
+  }
+  50% {
+    box-shadow:
+      0 0 10px rgba(0, 240, 255, 0.5),
+      0 0 20px rgba(0, 240, 255, 0.3),
+      0 0 40px rgba(0, 240, 255, 0.15);
+    opacity: 0.9;
+  }
+}
+
+@keyframes pulse-glow-magenta {
+  0%, 100% {
+    box-shadow:
+      0 0 5px rgba(255, 0, 170, 0.3),
+      0 0 10px rgba(255, 0, 170, 0.2);
+    opacity: 1;
+  }
+  50% {
+    box-shadow:
+      0 0 10px rgba(255, 0, 170, 0.5),
+      0 0 20px rgba(255, 0, 170, 0.3),
+      0 0 40px rgba(255, 0, 170, 0.15);
+    opacity: 0.9;
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes grid-fade {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes flicker {
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+    opacity: 1;
+  }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes data-stream {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 0% 100%;
+  }
+}
+
+@keyframes border-trace {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes text-glow-pulse {
+  0%, 100% {
+    text-shadow:
+      0 0 7px rgba(0, 240, 255, 0.6),
+      0 0 10px rgba(0, 240, 255, 0.4);
+  }
+  50% {
+    text-shadow:
+      0 0 14px rgba(0, 240, 255, 0.8),
+      0 0 20px rgba(0, 240, 255, 0.5),
+      0 0 42px rgba(0, 240, 255, 0.3);
+  }
+}
+
+/* Animation utility classes */
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-pulse-glow-magenta {
+  animation: pulse-glow-magenta 2s ease-in-out infinite;
+}
+
+.animate-scanline {
+  animation: scanline 8s linear infinite;
+}
+
+.animate-grid-fade {
+  animation: grid-fade 4s ease-in-out infinite;
+}
+
+.animate-flicker {
+  animation: flicker 3s linear infinite;
+}
+
+.animate-data-stream {
+  animation: data-stream 3s linear infinite;
+}
+
+.animate-border-trace {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 240, 255, 0.6),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: border-trace 3s linear infinite;
+}
+
+.animate-text-glow-pulse {
+  animation: text-glow-pulse 2s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════
+   Scanline Overlay Effect
+   ═══════════════════════════════════════════ */
+.scanline-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanline-overlay::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 240, 255, 0.15),
+    transparent
+  );
+  animation: scanline 8s linear infinite;
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* CRT scanline effect (subtle horizontal lines) */
+.scanline-crt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 40;
+}
+
+/* ═══════════════════════════════════════════
+   Custom Scrollbar — Cyan Theme
+   ═══════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 240, 255, 0.03);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.2);
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 6px rgba(0, 240, 255, 0.3);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: rgba(0, 240, 255, 0.5);
+  box-shadow:
+    0 0 8px rgba(0, 240, 255, 0.4),
+    0 0 16px rgba(0, 240, 255, 0.2);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 240, 255, 0.2) rgba(0, 240, 255, 0.03);
+}
+
+/* ═══════════════════════════════════════════
+   RTL Utilities
+   ═══════════════════════════════════════════ */
+.rtl {
+  direction: rtl;
+}
+
+.ltr {
+  direction: ltr;
+}
+
+/* Flip icons/assets in RTL context */
+.rtl-flip {
+  transform: scaleX(-1);
+}
+
+/* Ensure numbers and LTR content render correctly within RTL */
+.rtl-numbers {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* ═══════════════════════════════════════════
+   Phone Frame Specific Styles
+   ═══════════════════════════════════════════ */
+.phone-frame {
+  position: relative;
+  width: 375px;
+  height: 812px;
+  border-radius: 40px;
+  border: 2px solid rgba(0, 240, 255, 0.2);
+  background: #0a0a0f;
+  overflow: hidden;
+  box-shadow:
+    0 0 15px rgba(0, 240, 255, 0.15),
+    0 0 30px rgba(0, 240, 255, 0.08),
+    0 0 60px rgba(0, 240, 255, 0.04),
+    inset 0 0 30px rgba(0, 240, 255, 0.02);
+}
+
+.phone-frame::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 28px;
+  background: #0a0a0f;
+  border-radius: 0 0 20px 20px;
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  border-top: none;
+  z-index: 60;
+}
+
+.phone-frame-content {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  direction: rtl;
+  padding-top: 28px;
+}
+
+/* Phone status bar */
+.phone-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 24px 4px;
+  font-size: 12px;
+  color: rgba(0, 240, 255, 0.6);
+  font-family: var(--font-geist-mono), monospace;
+  direction: ltr;
+}
+
+/* Phone home indicator */
+.phone-home-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  border-radius: 2.5px;
+  background: rgba(0, 240, 255, 0.3);
+  z-index: 60;
+}
+
+/* ═══════════════════════════════════════════
+   Input & Button Neon States
+   ═══════════════════════════════════════════ */
+input,
+textarea,
+select {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow:
+    0 0 0 2px rgba(0, 240, 255, 0.1),
+    0 0 10px rgba(0, 240, 255, 0.2),
+    0 0 20px rgba(0, 240, 255, 0.1);
+  outline: none;
+}
+
+/* TRON-styled button base */
+.tron-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(0, 240, 255, 0.05);
+  color: #00f0ff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.tron-button:hover {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow:
+    0 0 10px rgba(0, 240, 255, 0.2),
+    0 0 20px rgba(0, 240, 255, 0.1);
+}
+
+.tron-button:active {
+  background: rgba(0, 240, 255, 0.15);
+  box-shadow:
+    0 0 5px rgba(0, 240, 255, 0.3),
+    inset 0 0 10px rgba(0, 240, 255, 0.1);
+  transform: scale(0.98);
+}
+
+.tron-button-magenta {
+  border-color: rgba(255, 0, 170, 0.3);
+  background: rgba(255, 0, 170, 0.05);
+  color: #ff00aa;
+}
+
+.tron-button-magenta:hover {
+  background: rgba(255, 0, 170, 0.1);
+  border-color: rgba(255, 0, 170, 0.5);
+  box-shadow:
+    0 0 10px rgba(255, 0, 170, 0.2),
+    0 0 20px rgba(255, 0, 170, 0.1);
+}
+
+.tron-button-magenta:active {
+  background: rgba(255, 0, 170, 0.15);
+  box-shadow:
+    0 0 5px rgba(255, 0, 170, 0.3),
+    inset 0 0 10px rgba(255, 0, 170, 0.1);
+}
+
+/* ═══════════════════════════════════════════
+   Divider / Separator Lines
+   ═══════════════════════════════════════════ */
+.tron-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 240, 255, 0.3),
+    transparent
+  );
+  border: none;
+}
+
+.tron-divider-magenta {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 0, 170, 0.3),
+    transparent
+  );
+  border: none;
+}
+
+/* ═══════════════════════════════════════════
+   Data / Code Display
+   ═══════════════════════════════════════════ */
+.tron-data {
+  font-family: var(--font-geist-mono), monospace;
+  color: rgba(0, 240, 255, 0.7);
+  letter-spacing: 0.05em;
+}
+
+.tron-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(0, 240, 255, 0.4);
+  font-family: var(--font-geist-mono), monospace;
+}
+
+/* ═══════════════════════════════════════════
+   Corner Accents (TRON-style frame corners)
+   ═══════════════════════════════════════════ */
+.tron-corner {
+  position: relative;
+}
+
+.tron-corner::before,
+.tron-corner::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: rgba(0, 240, 255, 0.4);
+  border-style: solid;
+  pointer-events: none;
+}
+
+.tron-corner::before {
+  top: -1px;
+  right: -1px;
+  border-width: 1px 1px 0 0;
+}
+
+.tron-corner::after {
+  bottom: -1px;
+  left: -1px;
+  border-width: 0 0 1px 1px;
+}
+
+/* All four corners */
+.tron-corner-full {
+  position: relative;
+}
+
+.tron-corner-full::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: none;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(0, 240, 255, 0.4), rgba(0, 240, 255, 0.4)) top right / 12px 1px no-repeat,
+    linear-gradient(rgba(0, 240, 255, 0.4), rgba(0, 240, 255, 0.4)) top right / 1px 12px no-repeat,
+    linear-gradient(rgba(0, 240, 255, 0.4), rgba(0, 240, 255, 0.4)) top left / 12px 1px no-repeat,
+    linear-gradient(rgba(0, 240, 255, 0.4), rgba(0, 240, 255, 0.4)) top left / 1px 12px no-repeat,
+    linear-gradient(rgba(0, 240, 255, 0.4), rgba(0, 240, 255, 0.4)) bottom right / 12px 1px no-repeat,
+    linear-gradient(rgba(0, 240, 255, 0.4), rgba(0, 240, 255, 0.4)) bottom right / 1px 12px no-repeat,
+    linear-gradient(rgba(0, 240, 255, 0.4), rgba(0, 240, 255, 0.4)) bottom left / 12px 1px no-repeat,
+    linear-gradient(rgba(0, 240, 255, 0.4), rgba(0, 240, 255, 0.4)) bottom left / 1px 12px no-repeat;
+}
+
+/* ═══════════════════════════════════════════
+   Utility: Text Colors
+   ═══════════════════════════════════════════ */
+.text-tron-cyan {
+  color: #00f0ff;
+}
+
+.text-tron-magenta {
+  color: #ff00aa;
+}
+
+.text-tron-muted {
+  color: rgba(0, 240, 255, 0.5);
+}
+
+.text-tron-dim {
+  color: rgba(0, 240, 255, 0.3);
+}
+
+/* ═══════════════════════════════════════════
+   Utility: Background Colors
+   ═══════════════════════════════════════════ */
+.bg-tron-dark {
+  background-color: #0a0a0f;
+}
+
+.bg-tron-elevated {
+  background-color: #0d0d18;
+}
+
+.bg-tron-cyan {
+  background-color: rgba(0, 240, 255, 0.05);
+}
+
+.bg-tron-magenta {
+  background-color: rgba(255, 0, 170, 0.05);
+}
+
+/* ═══════════════════════════════════════════
+   Utility: Border Colors
+   ═══════════════════════════════════════════ */
+.border-tron-cyan {
+  border-color: rgba(0, 240, 255, 0.3);
+}
+
+.border-tron-magenta {
+  border-color: rgba(255, 0, 170, 0.3);
+}
+
+.border-tron-dim {
+  border-color: rgba(0, 240, 255, 0.08);
+}
+
+/* ═══════════════════════════════════════════
+   Gradient Overlays
+   ═══════════════════════════════════════════ */
+.tron-gradient-top {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 240, 255, 0.08) 0%,
+    transparent 100%
+  );
+}
+
+.tron-gradient-bottom {
+  background: linear-gradient(
+    0deg,
+    rgba(0, 240, 255, 0.08) 0%,
+    transparent 100%
+  );
+}
+
+.tron-gradient-magenta-top {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 0, 170, 0.08) 0%,
+    transparent 100%
+  );
+}
+
+/* ═══════════════════════════════════════════
+   Reduced Motion
+   ═══════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-glow,
+  .animate-pulse-glow-magenta,
+  .animate-scanline,
+  .animate-grid-fade,
+  .animate-flicker,
+  .animate-data-stream,
+  .animate-border-trace,
+  .animate-text-glow-pulse {
+    animation: none !important;
+  }
+
+  .scanline-overlay::after {
+    animation: none !important;
+  }
+
+  .neon-hover,
+  .card-glow,
+  .card-glow-magenta,
+  .tron-button,
+  .tron-button-magenta,
+  input,
+  textarea,
+  select {
+    transition-duration: 0.01ms !important;
+  }
+}
