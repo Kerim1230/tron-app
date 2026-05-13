@@ -9,11 +9,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'حقل query مطلوب' }, { status: 400 });
     }
 
-    const token = process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
+    const token = process.env.GITHUB_MODELS_TOKEN || process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
 
     if (!token) {
       return NextResponse.json({
-        error: 'مفتاح GitHub غير متوفر. أضف GIT_TOKEN إلى متغيرات البيئة.',
+        error: 'مفتاح GitHub غير متوفر. أضف GITHUB_MODELS_TOKEN أو GIT_TOKEN إلى متغيرات البيئة.',
         simulated: true,
       }, { status: 401 });
     }

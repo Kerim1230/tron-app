@@ -48,7 +48,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const owner = searchParams.get('owner') || 'Kerim1230';
     const repo = searchParams.get('repo') || 'tron-app';
-    const token = process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
+    const token = process.env.GITHUB_MODELS_TOKEN || process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
 
     // محاولة جلب البيانات الحقيقية
     if (token) {

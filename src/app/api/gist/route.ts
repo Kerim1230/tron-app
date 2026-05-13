@@ -14,14 +14,14 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const gistId = searchParams.get('gistId');
-    const token = process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
+    const token = process.env.GITHUB_MODELS_TOKEN || process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
 
     if (!gistId) {
       return NextResponse.json({ error: 'gistId مطلوب' }, { status: 400 });
     }
 
     if (!token) {
-      return NextResponse.json({ error: 'مفتاح GitHub غير متوفر' }, { status: 401 });
+      return NextResponse.json({ error: 'مفتاح GitHub غير متوفر. أضف GITHUB_MODELS_TOKEN أو GIT_TOKEN إلى متغيرات البيئة.' }, { status: 401 });
     }
 
     const response = await fetch(`${GITHUB_API}/gists/${gistId}`, {
@@ -40,10 +40,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { content, filename, description } = body;
-    const token = process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
+    const token = process.env.GITHUB_MODELS_TOKEN || process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
 
     if (!token) {
-      return NextResponse.json({ error: 'مفتاح GitHub غير متوفر' }, { status: 401 });
+      return NextResponse.json({ error: 'مفتاح GitHub غير متوفر. أضف GITHUB_MODELS_TOKEN أو GIT_TOKEN إلى متغيرات البيئة.' }, { status: 401 });
     }
 
     const response = await fetch(`${GITHUB_API}/gists`, {
@@ -68,7 +68,7 @@ export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
     const { gistId, content, filename } = body;
-    const token = process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
+    const token = process.env.GITHUB_MODELS_TOKEN || process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
 
     if (!gistId || !token) {
       return NextResponse.json({ error: 'gistId ومفتاح GitHub مطلوبان' }, { status: 400 });
@@ -94,7 +94,7 @@ export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const gistId = searchParams.get('gistId');
-    const token = process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
+    const token = process.env.GITHUB_MODELS_TOKEN || process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
 
     if (!gistId || !token) {
       return NextResponse.json({ error: 'gistId ومفتاح GitHub مطلوبان' }, { status: 400 });

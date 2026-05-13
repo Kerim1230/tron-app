@@ -1,15 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
-// GET /api/bookmarks — list all bookmarks
+// GET /api/bookmarks — جلب جميع الإشارات المرجعية
 export async function GET() {
-  const bookmarks = await db.bookmark.findMany({
-    orderBy: { createdAt: 'desc' },
-  });
-  return NextResponse.json(bookmarks);
+  try {
+    const bookmarks = await db.bookmark.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+    return NextResponse.json(bookmarks);
+  } catch (error) {
+    console.error('Get bookmarks error:', error);
+    return NextResponse.json(
+      { error: 'حدث خطأ أثناء جلب الإشارات المرجعية' },
+      { status: 500 }
+    );
+  }
 }
 
-// POST /api/bookmarks — create a new bookmark
+// POST /api/bookmarks — إنشاء إشارة مرجعية جديدة
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -17,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     if (!url || !title) {
       return NextResponse.json(
-        { error: 'url and title are required' },
+        { error: 'url و title مطلوبان' },
         { status: 400 }
       );
     }
@@ -32,9 +40,10 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(bookmark, { status: 201 });
-  } catch {
+  } catch (error) {
+    console.error('Create bookmark error:', error);
     return NextResponse.json(
-      { error: 'Failed to create bookmark' },
+      { error: 'حدث خطأ أثناء إنشاء الإشارة المرجعية' },
       { status: 500 }
     );
   }

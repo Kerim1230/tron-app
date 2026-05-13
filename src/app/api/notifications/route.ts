@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const token = searchParams.get('token') || process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
+    const token = searchParams.get('token') || process.env.GITHUB_MODELS_TOKEN || process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
 
     if (!token) {
       // إشعارات محاكاة

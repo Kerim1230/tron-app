@@ -1,34 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
-const RESPONSES: Record<string, string[]> = {
+// ردود محاكاة احتياطية عند فشل الاتصال بالنموذج
+const FALLBACK_RESPONSES: Record<string, string[]> = {
   'شرح': [
     'بالتأكيد! دعني أشرح لك هذا الموضوع بالتفصيل.\n\n**المفهوم الأساسي** يعتمد على عدة نقاط مهمة:\n\n- **الأساس**: فهم المبادئ الأولية التي يبنى عليها الموضوع\n- **التطبيق**: كيفية استخدام هذه المبادئ في الواقع العملي\n- **الأمثلة**: نماذج توضيحية تساعد في الفهم بشكل أفضل\n\nهل تريد أن أتعمق في جزء معين من هذا الشرح؟',
-  ],
-  'ترجم': [
-    'تمت الترجمة بنجاح! ✅\n\nحرصت على نقل المعنى بدقة مع مراعاة الفروق اللغوية والثقافية بين اللغتين.\n\n💡 يمكنني أيضاً تقديم ترجمات بديلة بأساليب مختلفة.',
-  ],
-  'كود': [
-    'بالتأكيد! إليك الكود المطلوب:\n\n```javascript\n// حل برمجي متكامل\nfunction process(data) {\n  return data\n    .filter(item => item.active)\n    .map(item => ({\n      ...item,\n      processed: true,\n      timestamp: Date.now()\n    }));\n}\n```\n\nهذا الكود يقوم بـ:\n- تصفية البيانات النشطة فقط\n- إضافة علامة معالجة لكل عنصر\n- إضافة طابع زمني\n\nهل تريد تعديل شيء في الكود؟',
-  ],
-  'حل': [
-    'دعني أساعدك في حل هذه المشكلة! 🔧\n\n**تحليل المشكلة:**\n\n1. **تحديد السبب الجذري**: غالباً ما تكون المشكلة ناتجة عن تكوين غير صحيح أو بيانات مفقودة\n\n2. **الحل المقترح**:\n- تأكد من أن جميع المتغيرات معرّفة بشكل صحيح\n- تحقق من الاتصال بالخادم\n- راجع سجلات الأخطاء للحصول على تفاصيل أكثر\n\n3. **خطوات الوقاية**:\n- إضافة معالجة أخطاء مناسبة\n- كتابة اختبارات وحدة\n- مراجعة الكود بشكل دوري\n\nهل تريد تفصيل أكثر؟',
   ],
   default: [
     'مرحباً! 👋 أنا المساعد الذكي لمتصفح TRON. يمكنني مساعدتك في:\n\n- 🔍 **شرح المفاهيم** وتوضيح الأفكار المعقدة\n- 🌐 **ترجمة النصوص** بين مختلف اللغات\n- 💻 **كتابة الأكواد** بلغات برمجة متعددة\n- 🔧 **حل المشكلات** التقنية والبرمجية\n\nكيف يمكنني مساعدتك اليوم؟',
     'شكراً لرسالتك! 😊 أنا هنا لمساعدتك.\n\nيمكنني تقديم المساعدة في عدة مجالات. فقط أخبرني بما تحتاجه وسأبذل قصارى جهدي لمساعدتك!',
   ],
 };
-
-function getResponse(message: string): string {
-  const lower = message.toLowerCase();
-  if (lower.includes('شرح') || lower.includes('اشرح')) return RESPONSES['شرح'][0];
-  if (lower.includes('ترجم')) return RESPONSES['ترجم'][0];
-  if (lower.includes('كود') || lower.includes('اكتب')) return RESPONSES['كود'][0];
-  if (lower.includes('حل') || lower.includes('مشكل')) return RESPONSES['حل'][0];
-  const arr = RESPONSES.default;
-  return arr[Math.floor(Math.random() * arr.length)];
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -42,27 +24,95 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = getResponse(message);
+    const usedModel = model || 'gpt-4o-mini';
+    const token = process.env.GITHUB_MODELS_TOKEN || process.env.GIT_TOKEN || process.env.GITHUB_TOKEN;
 
-    // Save to database (non-blocking)
+    // محاولة استدعاء GitHub Models API للرد الفعلي
+    if (token) {
+      try {
+        const response = await fetch('https://models.inference.ai.azure.com/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: usedModel,
+            messages: [
+              { role: 'system', content: 'أنت مساعد ذكي لمتصفح TRON. أجب بالعربية. ساعد المستخدم في البحث والترجمة والبرمجة وحل المشكلات.' },
+              { role: 'user', content: message },
+            ],
+            temperature: 0.7,
+            max_tokens: 800,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const aiResponse = data.choices?.[0]?.message?.content || 'لا يوجد رد';
+
+          // حفظ في قاعدة البيانات (غير حاظر)
+          try {
+            await db.aiConversation.create({
+              data: {
+                title: message.slice(0, 50),
+                model: usedModel,
+                messages: {
+                  create: [
+                    { role: 'user', content: message },
+                    { role: 'assistant', content: aiResponse },
+                  ],
+                },
+              },
+            });
+          } catch {
+            // فشل حفظ DB غير حرج
+          }
+
+          return NextResponse.json({
+            response: aiResponse,
+            model: usedModel,
+            usage: data.usage,
+          });
+        }
+      } catch {
+        // فشل الاتصال - استخدام الردود الاحتياطية
+      }
+    }
+
+    // رد احتياطي محاكاة
+    const lower = message.toLowerCase();
+    let fallbackResponse: string;
+    if (lower.includes('شرح') || lower.includes('اشرح')) {
+      fallbackResponse = FALLBACK_RESPONSES['شرح'][0];
+    } else {
+      const arr = FALLBACK_RESPONSES.default;
+      fallbackResponse = arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    // حفظ في قاعدة البيانات (غير حاظر)
     try {
       await db.aiConversation.create({
         data: {
           title: message.slice(0, 50),
-          model: model || 'default',
+          model: usedModel + '-fallback',
           messages: {
             create: [
               { role: 'user', content: message },
-              { role: 'assistant', content: response },
+              { role: 'assistant', content: fallbackResponse },
             ],
           },
         },
       });
     } catch {
-      // DB save failure is non-critical
+      // فشل حفظ DB غير حرج
     }
 
-    return NextResponse.json({ response });
+    return NextResponse.json({
+      response: fallbackResponse,
+      model: usedModel,
+      fallback: true,
+    });
   } catch (error) {
     console.error('Chat API error:', error);
     return NextResponse.json(
