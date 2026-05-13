@@ -1,0 +1,111 @@
+# تكوين Dependabot - TRON Σ
+# فحص تلقائي لتحديثات التبعيات والأمان
+
+version: 2
+
+updates:
+  # ──────────────────────────────────────────────
+  # تحديثات حزم npm
+  # ──────────────────────────────────────────────
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      # فحص أسبوعي كل يوم اثنين
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Riyadh"
+    # الحد الأقصى لطلبات السحب المفتوحة
+    open-pull-requests-limit: 10
+    # تسميات تلقائية
+    labels:
+      - "dependencies"
+      - "automated"
+    # التعيين التلقائي
+    assignees:
+      - "Kerim1230"
+    reviewers:
+      - "Kerim1230"
+    # تجميع التحديثات الصغيرة
+    groups:
+      # تجميع تحديثات الإصلاحات
+      patch-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      # تجميع تحديثات الأمان
+      security-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "security"
+      # تجميع تحديثات Next.js
+      nextjs-updates:
+        patterns:
+          - "next"
+          - "@next/*"
+      # تجميع تحديثات React
+      react-updates:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react*"
+      # تجميع تحديثات Tailwind CSS
+      tailwind-updates:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
+    # الالتزام برسائل تقليدية
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore(deps-dev)"
+      include: "scope"
+    # تجاهل تحديثات معينة
+    ignore:
+      # لا نحدث الإصدارات الرئيسية تلقائياً
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # ──────────────────────────────────────────────
+  # تحديثات GitHub Actions
+  # ──────────────────────────────────────────────
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      # فحص شهري
+      interval: "monthly"
+      time: "06:00"
+      timezone: "Asia/Riyadh"
+    labels:
+      - "github-actions"
+      - "dependencies"
+      - "automated"
+    assignees:
+      - "Kerim1230"
+    reviewers:
+      - "Kerim1230"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    open-pull-requests-limit: 5
+
+  # ──────────────────────────────────────────────
+  # تحديثات Docker (إن وجدت)
+  # ──────────────────────────────────────────────
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      time: "06:00"
+      timezone: "Asia/Riyadh"
+    labels:
+      - "docker"
+      - "dependencies"
+      - "automated"
+    assignees:
+      - "Kerim1230"
+    commit-message:
+      prefix: "ci(docker)"
+      include: "scope"
+    open-pull-requests-limit: 3

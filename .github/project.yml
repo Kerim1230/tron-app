@@ -1,0 +1,160 @@
+# تكوين لوحة المشروع - TRON Σ
+# تعريف الأعمدة والتسميات وقواعد التنقل التلقائي
+
+name: TRON Σ Project Board
+
+# ──────────────────────────────────────────────
+# أعمدة لوحة المشروع
+# ──────────────────────────────────────────────
+columns:
+  - name: 📋 Backlog
+    description: |
+      العناصر التي لم تبدأ بعد. جميع المشاكل والطلبات الجديدة
+      تدخل هنا أولاً قبل التخطيط.
+    position: 1
+
+  - name: 📝 Todo
+    description: |
+      العناصر المخطط لها في الدورة الحالية. تم تحديد
+      الأولوية والمتطلبات وتم التعيين.
+    position: 2
+
+  - name: 🔄 In Progress
+    description: |
+      العناصر قيد التنفيذ حالياً. يجب تحديث الحالة
+      بانتظام وإضافة تعليقات التقدم.
+    position: 3
+
+  - name: 👀 Review
+    description: |
+      العناصر بانتظار المراجعة. تشمل طلبات السحب
+      المفتوحة والعناصر التي تحتاج اختبار.
+    position: 4
+
+  - name: ✅ Done
+    description: |
+      العناصر المكتملة. تم المراجعة والاختبار والدمج
+      مع الفرع الرئيسي.
+    position: 5
+
+# ──────────────────────────────────────────────
+# قواعد التنقل التلقائي
+# ──────────────────────────────────────────────
+automation:
+  # التنقل عند إنشاء مشكلة جديدة
+  - event: issues.opened
+    action: add_to_column
+    column: 📋 Backlog
+
+  # التنقل عند تعيين المشكلة
+  - event: issues.assigned
+    action: move_to_column
+    column: 📝 Todo
+
+  # التنقل عند فتح طلب سحب
+  - event: pull_request.opened
+    action: move_to_column
+    column: 🔄 In Progress
+
+  # التنقل عند طلب مراجعة
+  - event: pull_request.review_requested
+    action: move_to_column
+    column: 👀 Review
+
+  # التنقل عند دمج طلب السحب
+  - event: pull_request.merged
+    action: move_to_column
+    column: ✅ Done
+
+  # التنقل عند إغلاق المشكلة
+  - event: issues.closed
+    action: move_to_column
+    column: ✅ Done
+
+# ──────────────────────────────────────────────
+# التسميات المتاحة
+# ──────────────────────────────────────────────
+labels:
+  # تصنيفات النوع
+  - name: bug
+    color: d73a4a
+    description: خطأ أو عطل في الكود
+
+  - name: enhancement
+    color: a2eeef
+    description: ميزة جديدة أو تحسين
+
+  - name: documentation
+    color: 0075ca
+    description: تحسينات أو إضافات على التوثيق
+
+  # تصنيفات الأولوية
+  - name: "priority: critical"
+    color: b60205
+    description: أولوية حرجة - يجب حلها فوراً
+
+  - name: "priority: high"
+    color: d93f0b
+    description: أولوية عالية - حل قريب
+
+  - name: "priority: medium"
+    color: fbca04
+    description: أولوية متوسطة - مخطط لها
+
+  - name: "priority: low"
+    color: 0e8a16
+    description: أولوية منخفضة - عندما يتسع الوقت
+
+  # تصنيفات المكون
+  - name: frontend
+    color: c5def5
+    description: مكونات الواجهة الأمامية
+
+  - name: backend
+    color: bfd4f2
+    description: مكونات الخلفية و API
+
+  - name: ai/ml
+    color: 5319e7
+    description: ذكاء اصطناعي وتعلم آلي
+
+  - name: ui/ux
+    color: fef2c0
+    description: تصميم وتجربة المستخدم
+
+  - name: security
+    color: b60205
+    description: أمان وحماية
+
+  - name: performance
+    color: fbca04
+    description: أداء وتحسين السرعة
+
+  # تصنيفات خاصة
+  - name: good first issue
+    color: 7057ff
+    description: مناسب للمساهمين الجدد
+
+  - name: help wanted
+    color: 008672
+    description: نحتاج مساعدة في هذا العنصر
+
+  - name: automated
+    color: ede5f5
+    description: تم إنشاؤه تلقائياً بواسطة البوت
+
+  - name: weekly-report
+    color: d4c5f9
+    description: تقرير أسبوعي تلقائي
+
+  - name: reminder
+    color: f9d0c4
+    description: تذكير مجدول
+
+  - name: news
+    color: bfdadc
+    description: ملخص أخبار تقنية
+
+  - name: insights
+    color: c2e0c6
+    description: تقرير رؤى وإحصائيات

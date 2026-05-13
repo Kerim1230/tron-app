@@ -9,10 +9,11 @@ import ChatPanel from '@/components/tron/ChatPanel';
 import SkillsPanel from '@/components/tron/SkillsPanel';
 import BookmarksPanel from '@/components/tron/BookmarksPanel';
 import HistoryPanel from '@/components/tron/HistoryPanel';
+import GitHubPanel from '@/components/tron/GitHubPanel';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type Screen = 'home' | 'browser' | 'chat' | 'skills' | 'bookmarks' | 'history';
+type Screen = 'home' | 'browser' | 'chat' | 'skills' | 'bookmarks' | 'history' | 'github';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -23,6 +24,7 @@ const screenTitles: Record<Screen, string> = {
   skills: 'المهارات',
   bookmarks: 'الإشارات المرجعية',
   history: 'السجل',
+  github: 'GitHub Σ',
 };
 
 const navTabs: { id: Screen; icon: string; label: string }[] = [
@@ -35,6 +37,7 @@ const navTabs: { id: Screen; icon: string; label: string }[] = [
 const moreItems: { id: Screen; icon: string; label: string }[] = [
   { id: 'bookmarks', icon: '🔖', label: 'الإشارات المرجعية' },
   { id: 'history', icon: '📜', label: 'السجل' },
+  { id: 'github', icon: '🐙', label: 'GitHub' },
 ];
 
 // ─── Panel Animation Variants ────────────────────────────────────────────────
@@ -58,7 +61,7 @@ export default function HomePage() {
   const moreButtonRef = useRef<HTMLButtonElement>(null);
   const moreMenuRef = useRef<HTMLDivElement>(null);
 
-  const isMoreScreen = activeScreen === 'bookmarks' || activeScreen === 'history';
+  const isMoreScreen = activeScreen === 'bookmarks' || activeScreen === 'history' || activeScreen === 'github';
 
   // Close more menu on outside click
   useEffect(() => {
@@ -107,6 +110,8 @@ export default function HomePage() {
         return <BookmarksPanel />;
       case 'history':
         return <HistoryPanel />;
+      case 'github':
+        return <GitHubPanel />;
     }
   };
 

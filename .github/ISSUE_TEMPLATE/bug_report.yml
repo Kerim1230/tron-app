@@ -1,0 +1,130 @@
+name: "تقرير خطأ"
+description: "أبلغ عن مشكلة واجهتها في TRON Σ"
+title: "[خطأ]: "
+labels: ["bug", "triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        شكرًا لك على الإبلاغ عن هذه المشكلة! يرجى ملء النموذج أدناه بالتفصيل لمساعدتنا في حل المشكلة بسرعة.
+        
+        ---
+        
+        🚀 **TRON Σ** — المتصفح الذكي من الجيل القادم
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "وصف المشكلة"
+      description: "قدم وصفًا واضحًا ومختصرًا للمشكلة التي واجهتها"
+      placeholder: "عندما أقوم بـ...، يحدث... بدلاً من..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "خطوات إعادة الإنتاج"
+      description: "خطوات مفصلة لإعادة إنتاج المشكلة"
+      placeholder: |
+        1. افتح المتصفح
+        2. انتقل إلى صفحة '...'
+        3. اضغط على '...'
+        4. شاهد الخطأ
+      value: |
+        1. 
+        2. 
+        3. 
+        4. 
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "السلوك المتوقع"
+      description: "ما الذي تتوقع أن يحدث بدلاً من ذلك؟"
+      placeholder: "كان من المفترض أن..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "لقطات الشاشة"
+      description: "إذا أمكن، أضف لقطات شاشة توضح المشكلة"
+      placeholder: "اسحب وأفلت الصور هنا..."
+
+  - type: dropdown
+    id: environment_os
+    attributes:
+      label: "نظام التشغيل"
+      description: "ما هو نظام التشغيل الذي تستخدمه؟"
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS (Apple Silicon)
+        - macOS (Intel)
+        - Linux (Ubuntu)
+        - Linux (Fedora)
+        - Linux (Arch)
+        - Android
+        - iOS
+        - أخرى
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment_browser
+    attributes:
+      label: "المتصفح"
+      description: "ما هو المتصفح الذي تستخدمه؟"
+      options:
+        - Chrome
+        - Firefox
+        - Safari
+        - Edge
+        - TRON Σ (تطبيق سطح المكتب)
+        - أخرى
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: "إصدار TRON Σ"
+      description: "ما هو إصدار TRON Σ الذي تستخدمه؟"
+      placeholder: "مثال: v1.0.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: "سجلات الأخطاء"
+      description: "انسخ والصق أي سجلات أخطاء ذات صلة من وحدة التحكم"
+      placeholder: |
+        Error: Something went wrong
+          at TRONBrowser.start (main.js:42)
+          ...
+      render: shell
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: "معلومات إضافية"
+      description: "أي سياق إضافي قد يساعد في حل المشكلة"
+      placeholder: "هل هناك أي شيء آخر يمكنه مساعدتنا؟"
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: "التأكيدات"
+      options:
+        - label: "لقد بحثت في المشاكل المفتوحة والمغلقة ولم أجد مشكلة مشابهة"
+          required: true
+        - label: "لقد حاولت إعادة إنتاج المشكلة في أحدث إصدار"
+          required: false
+        - label: "لقد قدمت جميع المعلومات المطلوبة أعلاه"
+          required: true

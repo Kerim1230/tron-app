@@ -1,0 +1,102 @@
+name: "طلب ميزة"
+description: "اقترح ميزة جديدة أو تحسينًا لـ TRON Σ"
+title: "[ميزة]: "
+labels: ["enhancement", "triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        شكرًا لاقتراحك! مساهماتك تساعد في جعل TRON Σ أفضل للجميع.
+        
+        ---
+        
+        🧠 **TRON Σ** — المتصفح الذكي المدعوم بالذكاء الاصطناعي
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "وصف المشكلة"
+      description: "هل المشكلة مرتبطة بعدم وجود ميزة معينة؟ صف الإحباط الذي تواجهه"
+      placeholder: |
+        أشعر بالإحباط عندما... 
+        أحتاج إلى أن أكون قادرًا على...
+        المشكلة الحالية هي...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "الحل المقترح"
+      description: "صف الحل أو الميزة التي تريد أن نضيفها"
+      placeholder: |
+        أقترح إضافة ميزة تسمح بـ...
+        يمكن أن يعمل هذا عن طريق...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "البدائل المقترحة"
+      description: "صف أي حلول بديلة أو ميزات فكرت فيها"
+      placeholder: |
+        فكرت أيضًا في...
+        بديل آخر يمكن أن يكون...
+        متصفحات أخرى تعالج هذا عن طريق...
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: "فئة الميزة"
+      description: "إلى أي فئة تنتمي هذه الميزة؟"
+      options:
+        - واجهة المستخدم / التصميم
+        - الذكاء الاصطناعي / المساعد الذكي
+        - الخصوصية / الأمان
+        - الأداء / السرعة
+        - الإضافات / التخصيص
+        - مزامنة / حسابات
+        - أدوات المطور
+        - إمكانية الوصول
+        - أخرى
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "الأولوية المقترحة"
+      description: "ما مدى أهمية هذه الميزة بالنسبة لك؟"
+      options:
+        - "حرج — لا يمكنني استخدام المتصفح بدونها"
+        - "عالية — ستحسن تجربتي بشكل كبير"
+        - "متوسطة — ستكون إضافة لطيفة"
+        - "منخفضة — تحسين ثانوي"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "سياق إضافي"
+      description: "أضف أي سياق آخر، لقطات شاشة، أو روابط مرجعية"
+      placeholder: |
+        روابط ذات صلة:
+        - 
+        لقطات شاشة من متصفحات أخرى:
+        
+        ملاحظات إضافية:
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: "التأكيدات"
+      options:
+        - label: "لقد بحثت في الطلبات المفتوحة والمغلقة ولم أجد طلبًا مشابهًا"
+          required: true
+        - label: "هذه الميزة لا تنتهك أي حقوق ملكية فكرية أو خصوصية"
+          required: true
+        - label: "أنا مستعد للمساعدة في تنفيذ هذه الميزة إذا لزم الأمر"
+          required: false

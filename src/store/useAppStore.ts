@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type Screen = 'home' | 'browser' | 'chat' | 'skills' | 'bookmarks' | 'history';
+type Screen = 'home' | 'browser' | 'chat' | 'skills' | 'bookmarks' | 'history' | 'github';
 
 interface BrowserStep {
   id: string;

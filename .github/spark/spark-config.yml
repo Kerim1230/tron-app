@@ -1,0 +1,251 @@
+# تكوين GitHub Spark - TRON Σ
+# إعدادات بناء مكونات TRON باستخدام GitHub Spark
+
+name: TRON Σ Spark Configuration
+version: 1.0.0
+
+# ──────────────────────────────────────────────
+# الإعدادات العامة
+# ──────────────────────────────────────────────
+settings:
+  # اللغة الافتراضية
+  default_language: "ar"
+  # اللغات المدعومة
+  supported_languages:
+    - code: "ar"
+      name: "العربية"
+      direction: "rtl"
+    - code: "en"
+      name: "English"
+      direction: "ltr"
+  # السمة الافتراضية
+  default_theme: "dark"
+  # المنطقة الزمنية
+  timezone: "Asia/Riyadh"
+
+# ──────────────────────────────────────────────
+# مكونات Spark
+# ──────────────────────────────────────────────
+components:
+  # ── مكون ملخص الأخبار ──
+  - name: "news-summary"
+    display_name: "📰 ملخص الأخبار"
+    description: |
+      مكون يعرض ملخص الأخبار التقنية اليومية
+      مع إمكانية التصفية حسب المصدر والموضوع.
+    category: "information"
+    schedule: "0 */6 * * *"
+    inputs:
+      - name: "sources"
+        type: "array"
+        default: ["tech", "ai", "webdev"]
+        description: "مصادر الأخبار"
+      - name: "language"
+        type: "string"
+        default: "ar"
+        description: "لغة الملخص"
+    outputs:
+      - name: "summary"
+        type: "markdown"
+        description: "ملخص الأخبار بصيغة Markdown"
+    dependencies:
+      - "github-models"
+    permissions:
+      - "models:read"
+
+  # ── مكون تقرير الطقس ──
+  - name: "weather-widget"
+    display_name: "🌤️ حالة الطقس"
+    description: |
+      ودجت يعرض حالة الطقس الحالية والتوقعات
+      مع دعم المدن العربية.
+    category: "information"
+    schedule: "0 6 * * *"
+    inputs:
+      - name: "city"
+        type: "string"
+        default: "الرياض"
+        description: "المدينة"
+      - name: "units"
+        type: "string"
+        default: "metric"
+        description: "وحدة القياس"
+    outputs:
+      - name: "current"
+        type: "json"
+        description: "بيانات الطقس الحالية"
+      - name: "forecast"
+        type: "json"
+        description: "توقعات الطقس"
+    dependencies:
+      - "openweathermap-api"
+    permissions:
+      - "external-api:read"
+
+  # ── مكون التذكيرات ──
+  - name: "reminders"
+    display_name: "⏰ التذكيرات"
+    description: |
+      مكون لإدارة التذكيرات المجدولة مع إشعارات
+      ذكية بناءً على الأولوية والوقت.
+    category: "productivity"
+    schedule: "*/10 * * * *"
+    inputs:
+      - name: "user_id"
+        type: "string"
+        description: "معرف المستخدم"
+    outputs:
+      - name: "due_reminders"
+        type: "array"
+        description: "التذكيرات المستحقة"
+      - name: "upcoming"
+        type: "array"
+        description: "التذكيرات القادمة"
+    dependencies:
+      - "database"
+    permissions:
+      - "issues:write"
+
+  # ── مكون النسخ الاحتياطي ──
+  - name: "backup-service"
+    display_name: "💾 النسخ الاحتياطي"
+    description: |
+      خدمة نسخ احتياطي تلقائي للبيانات مع
+      إمكانية الاستعادة والتحقق من السلامة.
+    category: "system"
+    schedule: "0 0 * * *"
+    inputs:
+      - name: "retention_days"
+        type: "number"
+        default: 30
+        description: "عدد أيام الاحتفاظ بالنسخ"
+    outputs:
+      - name: "backup_status"
+        type: "json"
+        description: "حالة النسخة الاحتياطية"
+      - name: "backup_url"
+        type: "string"
+        description: "رابط تنزيل النسخة"
+    dependencies:
+      - "database"
+      - "storage"
+    permissions:
+      - "contents:write"
+
+  # ── مكون الرؤى الأسبوعية ──
+  - name: "weekly-insights"
+    display_name: "📊 الرؤى الأسبوعية"
+    description: |
+      تقرير أسبوعي تلقائي يجمع إحصائيات المشروع
+      ويقدم توصيات لتحسين الإنتاجية.
+    category: "analytics"
+    schedule: "0 9 * * 1"
+    inputs:
+      - name: "repo"
+        type: "string"
+        description: "المستودع"
+    outputs:
+      - name: "report"
+        type: "markdown"
+        description: "تقرير الرؤى الأسبوعي"
+    dependencies:
+      - "github-api"
+    permissions:
+      - "issues:write"
+      - "discussions:write"
+
+  # ── مكون لوحة التحكم ──
+  - name: "dashboard"
+    display_name: "🎛️ لوحة التحكم"
+    description: |
+      لوحة تحكم مركزية تجمع كل مكونات TRON Σ
+      مع إحصائيات في الوقت الحقيقي.
+    category: "system"
+    schedule: null
+    inputs:
+      - name: "refresh_interval"
+        type: "number"
+        default: 60
+        description: "فترة التحديث بالثواني"
+    outputs:
+      - name: "status"
+        type: "json"
+        description: "حالة جميع المكونات"
+    dependencies:
+      - "all"
+    permissions:
+      - "contents:read"
+      - "issues:read"
+
+# ──────────────────────────────────────────────
+# قوالب Spark
+# ──────────────────────────────────────────────
+templates:
+  # قالب مكون عربي
+  - name: "arabic-component"
+    display_name: "مكون عربي"
+    description: "قالب لإنشاء مكون TRON جديد مع دعم العربية"
+    files:
+      - path: "component.tsx"
+        template: |
+          'use client';
+
+          import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+          interface {{ComponentName}}Props {
+            // خصائص المكون
+          }
+
+          export function {{ComponentName}}({}: {{ComponentName}}Props) {
+            return (
+              <Card className="h-full">
+                <CardHeader>
+                  <CardTitle>{{عنوان المكون}}</CardTitle>
+                </CardHeader>
+                <CardContent dir="rtl">
+                  {/* محتوى المكون */}
+                </CardContent>
+              </Card>
+            );
+          }
+      - path: "api/route.ts"
+        template: |
+          import { NextResponse } from 'next/server';
+
+          export async function GET() {
+            try {
+              // منطق API
+              return NextResponse.json({ success: true });
+            } catch (error) {
+              return NextResponse.json(
+                { error: 'حدث خطأ أثناء المعالجة' },
+                { status: 500 }
+              );
+            }
+          }
+
+# ──────────────────────────────────────────────
+# إعدادات البناء
+# ──────────────────────────────────────────────
+build:
+  # بيئة البناء
+  runtime: "nodejs22"
+  # إطار العمل
+  framework: "nextjs16"
+  # الملفات المطلوبة
+  required_files:
+    - "package.json"
+    - "next.config.ts"
+    - "tsconfig.json"
+  # الملفات المستثناة
+  exclude:
+    - "node_modules/**"
+    - ".next/**"
+    - "dist/**"
+    - "*.db"
+  # متغيرات البيئة المطلوبة
+  env_vars:
+    - name: "NEXT_PUBLIC_APP_NAME"
+      default: "TRON Σ"
+    - name: "NEXT_PUBLIC_DEFAULT_LANGUAGE"
+      default: "ar"

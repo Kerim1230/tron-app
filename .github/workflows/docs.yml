@@ -1,0 +1,72 @@
+# سير عمل نشر التوثيق - TRON Σ
+# نشر التوثيق على GitHub Pages عند الدفع إلى الفرع الرئيسي
+
+name: Deploy Documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# السماح بتشغيل واحد فقط في كل مرة
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # ──────────────────────────────────────────────
+  # وظيفة البناء
+  # ──────────────────────────────────────────────
+  build:
+    name: 🏗️ بناء التوثيق
+    runs-on: ubuntu-latest
+    steps:
+      - name: استخراج المستودع
+        uses: actions/checkout@v4
+
+      - name: إعداد Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: تثبيت التبعيات
+        run: npm ci
+        working-directory: docs
+
+      - name: بناء التوثيق
+        # بناء موقع التوثيق الثابت
+        run: npm run build
+        working-directory: docs
+
+      - name: إعداد GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: رفع أرتي فاكت الصفحات
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/dist
+
+  # ──────────────────────────────────────────────
+  # وظيفة النشر
+  # ──────────────────────────────────────────────
+  deploy:
+    name: 🚀 نشر التوثيق
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: نشر على GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

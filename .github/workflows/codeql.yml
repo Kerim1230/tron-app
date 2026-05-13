@@ -1,0 +1,100 @@
+# سير عمل تحليل الأمان CodeQL - TRON Σ
+# فحص أمني شامل للكود باستخدام CodeQL مع تقارير ذكية
+
+name: CodeQL Security Analysis
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+  schedule:
+    # فحص أسبوعي كل يوم اثنين الساعة 3 صباحاً
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
+jobs:
+  # ──────────────────────────────────────────────
+  # وظيفة تحليل CodeQL
+  # ──────────────────────────────────────────────
+  analyze:
+    name: 🔍 تحليل الأمان
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          - javascript-typescript
+          # يمكن إضافة لغات أخرى مستقبلاً
+          # - python
+
+    steps:
+      - name: استخراج المستودع
+        uses: actions/checkout@v4
+
+      - name: تهيئة CodeQL
+        # تهيئة قاعدة بيانات CodeQL للغة المحددة
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          # استخدام أحدث استعلامات الأمان
+          queries: security-extended,security-and-quality
+          config-file: ./.github/codeql-config.yml
+          # تتبع المصدر لبناء أفضل
+          build-mode: none
+
+      - name: تنفيذ تحليل CodeQL
+        # تنفيذ التحليل الأمني على الكود
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+          output: results.sarif
+
+      - name: إنشاء تقرير ذكي بصيغة SARIF
+        # استخدام أداة ivuorinen لإنشاء تقرير مناسب للذكاء الاصطناعي
+        if: always()
+        uses: ivuorinen/gh-codeql-report@v1
+        with:
+          sarif-file: results.sarif
+          output-format: markdown
+          # إدراج فقط النتائج الحرجة والعالية
+          severity-filter: critical,high
+        continue-on-error: true
+
+      - name: رفع نتائج التحليل
+        # رفع نتائج SARIF إلى GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: results.sarif
+
+      - name: نشر التقرير كتعليق
+        # نشر ملخص التقرير على طلب السحب
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            try {
+              const report = fs.readFileSync('codeql-report.md', 'utf8');
+              if (report.trim()) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: `## 🔍 تقرير تحليل الأمان - CodeQL\n\n${report}\n\n---\n*تم إنشاء هذا التقرير تلقائياً بواسطة TRON Σ Security Scanner*`
+                });
+              }
+            } catch (error) {
+              console.log('لا يوجد تقرير للنشر:', error.message);
+            }

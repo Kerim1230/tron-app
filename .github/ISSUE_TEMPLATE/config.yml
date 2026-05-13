@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "📖 التوثيق الرسمي"
+    url: "https://tron-sigma.dev/docs"
+    about: "استشر التوثيق الرسمي أولاً — يحتوي على إجابات لمعظم الأسئلة الشائعة وأدلة الاستخدام الكاملة"
+  - name: "💬 نقاشات المجتمع"
+    url: "https://github.com/tron-sigma/smart-browser/discussions"
+    about: "اطرح أسئلة، شارك أفكارك، وتواصل مع مجتمع TRON Σ"
+  - name: "🎮 خادم Discord"
+    url: "https://discord.gg/tron-sigma"
+    about: "انضم إلى خادم Discord للدعم المباشر والنقاشات مع فريق التطوير والمجتمع"
+  - name: "🔒 الإبلاغ عن ثغرة أمنية"
+    url: "https://tron-sigma.dev/security"
+    about: "لا تبلغ عن الثغرات الأمنية علنياً — استخدم قناة الإبلاغ الأمني الخاصة"

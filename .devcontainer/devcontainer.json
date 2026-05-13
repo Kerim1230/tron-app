@@ -1,0 +1,102 @@
+{
+  // تكوين مساحة التطوير - TRON Σ
+  // بيئة تطوير سحابية مع Node.js 22 ودعم TypeScript
+  "name": "TRON Σ Smart Browser",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+
+  "features": {
+    // دعم Node.js 22
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22",
+      "pnpm": false,
+      "yarn": false
+    },
+    // دعم GitHub CLI
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  // إعدادات التهيئة بعد الإنشاء
+  "postCreateCommand": "corepack enable && bun install",
+
+  // إعدادات المنفذ
+  "forwardPorts": [3000],
+
+  "portsAttributes": {
+    "3000": {
+      "label": "TRON Σ Dev Server",
+      "onAutoForward": "notify"
+    }
+  },
+
+  // تخصيص المحرر - الإضافات المثبتة
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Tailwind CSS - دعم إطار التنسيق
+        "bradlc.vscode-tailwindcss",
+        // ESLint - فحص الكود
+        "dbaeumer.vscode-eslint",
+        // GitHub Copilot - مساعد البرمجة بالذكاء الاصطناعي
+        "github.copilot",
+        // Prisma - أدوات قاعدة البيانات
+        "prisma.prisma",
+        // TypeScript - دعم اللغة
+        "ms-vscode.vscode-typescript-next",
+        // Prettier - تنسيق الكود
+        "esbenp.prettier-vscode",
+        // Error Lens - عرض الأخطاء مباشرة
+        "usernamehw.errorlens",
+        // GitLens - أدوات Git المتقدمة
+        "eamodio.gitlens",
+        // Auto Rename Tag - إعادة تسمية العلامات تلقائياً
+        "formulahendry.auto-rename-tag",
+        // Path Intellisense - إكمال المسارات
+        "christian-kohler.path-intellisense",
+        // Arabic - دعم اللغة العربية
+        "ms-vscode.arabic"
+      ],
+      "settings": {
+        // إعدادات المحرر
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit",
+          "source.organizeImports": "explicit"
+        },
+        // إعدادات TypeScript
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true,
+        // إعدادات Tailwind CSS
+        "tailwindCSS.includeLanguages": {
+          "typescript": "javascript",
+          "typescriptreact": "javascript"
+        },
+        // إعدادات الملفات
+        "files.associations": {
+          "*.css": "tailwindcss",
+          ".env": "dotenv",
+          ".env.local": "dotenv"
+        },
+        // إعدادات البحث
+        "search.exclude": {
+          "**/node_modules": true,
+          "**/.next": true,
+          "**/dist": true
+        },
+        // اتجاه النص للعربية
+        "editor.direction": "ltr"
+      }
+    }
+  },
+
+  // متغيرات البيئة
+  "remoteEnv": {
+    "NODE_ENV": "development",
+    "NEXT_TELEMETRY_DISABLED": "1"
+  },
+
+  // دورة حياة المساحة
+  "lifecycleScripts": {
+    "postStartCommand": "echo '🚀 مرحباً بك في مساحة تطوير TRON Σ!'"
+  }
+}

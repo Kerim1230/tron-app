@@ -1,0 +1,197 @@
+# سير عمل العوامل الذكية - TRON Σ
+# تصنيف تلقائي للمشاكل، تعيين تلقائي، تلخيص طلبات السحب بالذكاء الاصطناعي
+
+name: Agentic Workflows
+
+on:
+  issues:
+    types: [opened, edited, labeled, unlabeled]
+  pull_request:
+    types: [opened, edited, synchronize, ready_for_review]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  models: read
+
+jobs:
+  # ──────────────────────────────────────────────
+  # وظيفة التصنيف التلقائي للمشاكل
+  # ──────────────────────────────────────────────
+  auto-label:
+    name: 🏷️ تصنيف تلقائي
+    if: github.event_name == 'issues' && (github.event.action == 'opened' || github.event.action == 'edited')
+    runs-on: ubuntu-latest
+    steps:
+      - name: استخراج المستودع
+        uses: actions/checkout@v4
+
+      - name: تصنيف المشكلة بناءً على المحتوى
+        # تحليل نص المشكلة وتصنيفها تلقائياً
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const body = (issue.body || '').toLowerCase();
+            const title = (issue.title || '').toLowerCase();
+            const fullText = `${title} ${body}`;
+
+            // قاموس التصنيفات والكلمات المفتاحية
+            const labelMap = {
+              'bug': ['خطأ', 'عطل', 'bug', 'error', 'crash', 'مشكلة', 'لا يعمل', 'فشل', 'failure'],
+              'enhancement': ['تحسين', 'ميزة جديدة', 'enhancement', 'feature', 'اقتراح', 'suggestion'],
+              'documentation': ['توثيق', 'documentation', 'docs', 'readme', 'شرح'],
+              'ui/ux': ['واجهة', 'تصميم', 'ui', 'ux', 'style', 'css', 'مظهر'],
+              'performance': ['أداء', 'performance', 'speed', 'بطيء', 'slow', 'تحسين الأداء'],
+              'security': ['أمان', 'security', 'vulnerability', 'ثغرة', 'حماية'],
+              'ai/ml': ['ذكاء اصطناعي', 'ai', 'ml', 'نموذج', 'model', 'تعلم آلي'],
+              'backend': ['خادم', 'backend', 'api', 'server', 'قاعدة بيانات', 'database'],
+              'frontend': ['واجهة أمامية', 'frontend', 'react', 'component', 'مكون'],
+              'good first issue': ['مبتدئ', 'good first issue', 'easy', 'بسيط', 'سهل']
+            };
+
+            const labelsToAdd = [];
+
+            for (const [label, keywords] of Object.entries(labelMap)) {
+              if (keywords.some(keyword => fullText.includes(keyword))) {
+                labelsToAdd.push(label);
+              }
+            }
+
+            // تصنيف بناءً على نوع العنصر
+            if (fullText.includes('سؤال') || fullText.includes('question') || fullText.includes('كيف')) {
+              labelsToAdd.push('question');
+            }
+
+            // تصنيف بناءً على الأولوية
+            if (fullText.includes('عاجل') || fullText.includes('urgent') || fullText.includes('حرج')) {
+              labelsToAdd.push('priority: high');
+            }
+
+            if (labelsToAdd.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: labelsToAdd
+              });
+              console.log(`✅ تم إضافة التصنيفات: ${labelsToAdd.join(', ')}`);
+            } else {
+              console.log('ℹ️ لم يتم العثور على تصنيفات مناسبة');
+            }
+
+  # ──────────────────────────────────────────────
+  # وظيفة التعيين التلقائي
+  # ──────────────────────────────────────────────
+  auto-assign:
+    name: 👤 تعيين تلقائي
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+      - name: تعيين المشكلة تلقائياً
+        # تعيين المشكلة للشخص المناسب بناءً على التصنيف
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const labels = issue.labels.map(l => l.name);
+
+            // خريطة التعيين بناءً على التصنيف
+            const assigneeMap = {
+              'bug': ['Kerim1230'],
+              'enhancement': ['Kerim1230'],
+              'documentation': ['Kerim1230'],
+              'ui/ux': ['Kerim1230'],
+              'performance': ['Kerim1230'],
+              'security': ['Kerim1230'],
+              'ai/ml': ['Kerim1230'],
+              'backend': ['Kerim1230'],
+              'frontend': ['Kerim1230']
+            };
+
+            const assignees = new Set();
+            for (const label of labels) {
+              if (assigneeMap[label]) {
+                assigneeMap[label].forEach(a => assignees.add(a));
+              }
+            }
+
+            // تعيين افتراضي إذا لم يتم العثور على مطابق
+            if (assignees.size === 0) {
+              assignees.add('Kerim1230');
+            }
+
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              assignees: [...assignees]
+            });
+
+            console.log(`✅ تم التعيين إلى: ${[...assignees].join(', ')}`);
+
+  # ──────────────────────────────────────────────
+  # وظيفة تلخيص طلبات السحب بالذكاء الاصطناعي
+  # ──────────────────────────────────────────────
+  summarize-pr:
+    name: 🤖 تلخيص طلب السحب
+    if: github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize')
+    runs-on: ubuntu-latest
+    steps:
+      - name: استخراج المستودع
+        uses: actions/checkout@v4
+
+      - name: تلخيص طلب السحب باستخدام GitHub Models
+        # استخدام الذكاء الاصطناعي لتلخيص التغييرات
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+
+            // جلب التغييرات
+            const { data: diff } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              headers: { accept: 'application/vnd.github.diff' }
+            });
+
+            // جلب الملفات المتغيرة
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number
+            });
+
+            // إنشاء ملخص بسيط
+            const fileList = files.map(f => `- \`${f.filename}\` (${f.status}, +${f.additions}/-${f.deletions})`).join('\n');
+            const totalAdditions = files.reduce((sum, f) => sum + f.additions, 0);
+            const totalDeletions = files.reduce((sum, f) => sum + f.deletions, 0);
+
+            const summary = `## 🤖 ملخص طلب السحب - TRON Σ AI
+
+            ### 📊 إحصائيات التغييرات
+            - **إجمالي الإضافات**: +${totalAdditions}
+            - **إجمالي الحذوفات**: -${totalDeletions}
+            - **عدد الملفات المتغيرة**: ${files.length}
+
+            ### 📁 الملفات المتغيرة
+            ${fileList}
+
+            ### 📝 الوصف
+            ${pr.body || 'لا يوجد وصف'}
+
+            ---
+            *تم إنشاء هذا الملخص تلقائياً بواسطة عامل TRON Σ الذكي*`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body: summary
+            });
+
+            console.log('✅ تم إنشاء ملخص طلب السحب بنجاح');

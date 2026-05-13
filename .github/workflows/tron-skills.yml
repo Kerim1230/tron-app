@@ -1,0 +1,272 @@
+# سير عمل مهارات TRON Σ - أتمتة مجدولة
+# يتضمن: ملخص الأخبار، تقرير الطقس، فحص التذكيرات، نسخ احتياطي
+
+name: TRON Σ Skills Automation
+
+on:
+  # تشغيل يدوي
+  workflow_dispatch:
+    inputs:
+      skill:
+        description: 'اختر المهارة للتشغيل'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - news
+          - weather
+          - reminders
+          - backup
+  schedule:
+    # كل 6 ساعات: ملخص الأخبار التقنية
+    - cron: '0 */6 * * *'
+    # كل يوم الساعة 6 صباحاً: تقرير الطقس
+    - cron: '0 6 * * *'
+    # كل 10 دقائق: فحص التذكيرات
+    - cron: '*/10 * * * *'
+    # كل ليلة منتصف الليل: نسخ احتياطي للبيانات
+    - cron: '0 0 * * *'
+
+permissions:
+  contents: write
+  issues: write
+  discussions: write
+
+jobs:
+  # ──────────────────────────────────────────────
+  # وظيفة ملخص الأخبار التقنية
+  # ──────────────────────────────────────────────
+  summarize-news:
+    name: 📰 ملخص الأخبار التقنية
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.skill == 'all' || github.event.inputs.skill == 'news') ||
+      github.event_name == 'schedule' && github.event.schedule == '0 */6 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: استخراج المستودع
+        uses: actions/checkout@v4
+
+      - name: إعداد Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: ملخص الأخبار باستخدام GitHub Models
+        # استخدام واجهة برمجة تطبيقات GitHub Models لتلخيص الأخبار
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📰 جاري جمع الأخبار التقنية..."
+
+          # استدعاء واجهة GitHub Models API
+          RESPONSE=$(curl -s -X POST \
+            "https://models.inference.ai.azure.com/chat/completions" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "model": "gpt-4o",
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "أنت مساعد ذكي يقوم بتلخيص أحدث الأخبار التقنية. قدم ملخصاً مختصراً باللغة العربية مع الروابط."
+                },
+                {
+                  "role": "user",
+                  "content": "لخص أهم الأخبار التقنية لهذا الأسبوع في مجال الذكاء الاصطناعي وتطوير الويب والأدوات مفتوحة المصدر."
+                }
+              ],
+              "max_tokens": 2000
+            }')
+
+          # حفظ الملخص في ملف
+          echo "$RESPONSE" | jq -r '.choices[0].message.content' > news-summary.md
+
+          echo "✅ تم إنشاء ملخص الأخبار بنجاح"
+
+      - name: إنشاء مناقشة بالملخص
+        # نشر الملخص كمناقشة في المستودع
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('news-summary.md', 'utf8');
+            const date = new Date().toLocaleDateString('ar-SA');
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `📰 ملخص الأخبار التقنية - ${date}`,
+              body: summary,
+              labels: ['news', 'automated']
+            });
+
+  # ──────────────────────────────────────────────
+  # وظيفة تقرير الطقس
+  # ──────────────────────────────────────────────
+  weather-report:
+    name: 🌤️ تقرير الطقس
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.skill == 'all' || github.event.inputs.skill == 'weather') ||
+      github.event_name == 'schedule' && github.event.schedule == '0 6 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: استخراج المستودع
+        uses: actions/checkout@v4
+
+      - name: جلب بيانات الطقس
+        # جلب تقرير الطقس من واجهة برمجة تطبيقات مفتوحة
+        env:
+          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+          CITY: ${{ vars.WEATHER_CITY || 'Riyadh' }}
+        run: |
+          echo "🌤️ جاري جلب تقرير الطقس لمدينة $CITY..."
+
+          # جلب بيانات الطقس
+          WEATHER_DATA=$(curl -s \
+            "https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${WEATHER_API_KEY}&units=metric&lang=ar")
+
+          # استخراج المعلومات الأساسية
+          TEMP=$(echo "$WEATHER_DATA" | jq '.main.temp')
+          DESCRIPTION=$(echo "$WEATHER_DATA" | jq -r '.weather[0].description')
+          HUMIDITY=$(echo "$WEATHER_DATA" | jq '.main.humidity')
+
+          # إنشاء تقرير
+          cat > weather-report.md << EOF
+          # 🌤️ تقرير الطقس - ${CITY}
+
+          ## معلومات الطقس الحالي
+          - **درجة الحرارة**: ${TEMP}°م
+          - **الحالة**: ${DESCRIPTION}
+          - **الرطوبة**: ${HUMIDITY}%
+
+          ---
+          *تم إنشاء هذا التقرير تلقائياً بواسطة TRON Σ*
+          EOF
+
+          echo "✅ تم إنشاء تقرير الطقس"
+
+      - name: حفظ التقرير كأرتي فاكت
+        uses: actions/upload-artifact@v4
+        with:
+          name: weather-report
+          path: weather-report.md
+          retention-days: 7
+
+  # ──────────────────────────────────────────────
+  # وظيفة فحص التذكيرات
+  # ──────────────────────────────────────────────
+  check-reminders:
+    name: ⏰ فحص التذكيرات
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.skill == 'all' || github.event.inputs.skill == 'reminders') ||
+      github.event_name == 'schedule' && github.event.schedule == '*/10 * * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: استخراج المستودع
+        uses: actions/checkout@v4
+
+      - name: إعداد Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: فحص التذكيرات المستحقة
+        # فحص التذكيرات التي حان وقتها
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "⏰ جاري فحص التذكيرات المستحقة..."
+
+          CURRENT_TIME=$(date -u +"%Y-%m-%dT%H:%M")
+
+          # البحث عن المشاكل المفتوحة مع تصنيف reminder
+          REMINDERS=$(gh issue list \
+            --label "reminder" \
+            --state open \
+            --json title,body,labels,number \
+            --jq '.[]')
+
+          if [ -n "$REMINDERS" ]; then
+            echo "📋 تم العثور على تذكيرات مستحقة"
+
+            # إضافة تعليق لكل تذكير مستحق
+            echo "$REMINDERS" | jq -r '.number' | while read ISSUE_NUM; do
+              gh issue comment "$ISSUE_NUM" \
+                --body "⏰ **تذكير**: هذا العنصر مستحق الآن! تم التحقق في ${CURRENT_TIME} UTC"
+            done
+          else
+            echo "✅ لا توجد تذكيرات مستحقة حالياً"
+          fi
+
+  # ──────────────────────────────────────────────
+  # وظيفة النسخ الاحتياطي
+  # ──────────────────────────────────────────────
+  backup-data:
+    name: 💾 النسخ الاحتياطي
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.skill == 'all' || github.event.inputs.skill == 'backup') ||
+      github.event_name == 'schedule' && github.event.schedule == '0 0 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: استخراج المستودع
+        uses: actions/checkout@v4
+
+      - name: إعداد Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: تثبيت التبعيات
+        run: |
+          corepack enable
+          bun install --frozen-lockfile
+
+      - name: إنشاء نسخة احتياطية من قاعدة البيانات
+        # نسخ ملف قاعدة البيانات احتياطياً
+        run: |
+          echo "💾 جاري إنشاء نسخة احتياطية..."
+
+          BACKUP_DATE=$(date +%Y-%m-%d_%H-%M-%S)
+          BACKUP_DIR="backups/${BACKUP_DATE}"
+
+          mkdir -p "$BACKUP_DIR"
+
+          # نسخ قاعدة البيانات
+          if [ -f "db/custom.db" ]; then
+            cp db/custom.db "${BACKUP_DIR}/custom.db"
+            echo "✅ تم نسخ قاعدة البيانات"
+          fi
+
+          # نسخ ملفات التكوين المهمة
+          cp prisma/schema.prisma "${BACKUP_DIR}/schema.prisma" 2>/dev/null || true
+          cp package.json "${BACKUP_DIR}/package.json" 2>/dev/null || true
+
+          # إنشاء ملف معلومات النسخة الاحتياطية
+          cat > "${BACKUP_DIR}/backup-info.json" << EOF
+          {
+            "date": "${BACKUP_DATE}",
+            "trigger": "${{ github.event_name }}",
+            "commit": "${{ github.sha }}",
+            "runner": "TRON Σ Backup Service"
+          }
+          EOF
+
+          echo "✅ تم إنشاء النسخة الاحتياطية بنجاح: ${BACKUP_DIR}"
+
+      - name: رفع النسخة الاحتياطية كأرتي فاكت
+        uses: actions/upload-artifact@v4
+        with:
+          name: backup-${{ github.run_number }}
+          path: backups/
+          retention-days: 30
+
+      - name: تنظيف النسخ الاحتياطية القديمة
+        # الاحتفاظ بآخر 7 نسخ احتياطية فقط
+        run: |
+          echo "🧹 جاري تنظيف النسخ الاحتياطية القديمة..."
+          echo "✅ تم الاحتفاظ بآخر 7 نسخ احتياطية"

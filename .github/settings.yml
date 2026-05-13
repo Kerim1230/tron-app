@@ -1,0 +1,172 @@
+# تكوين إعدادات المستودع - TRON Σ
+# إعدادات حماية الفروع والفحوص المطلوبة وتنفيذ CODEOWNERS
+
+repository:
+  # ──────────────────────────────────────────────
+  # الإعدادات العامة
+  # ──────────────────────────────────────────────
+  name: tron-sigma
+  description: "TRON Σ - متصفح ذكي مبني على Next.js مع دعم الذكاء الاصطناعي"
+  homepage: "https://tron-sigma.dev"
+  topics:
+    - "nextjs"
+    - "typescript"
+    - "ai-browser"
+    - "tailwindcss"
+    - "prisma"
+    - "smart-browser"
+
+  # إعدادات مرئية
+  visibility: public
+  has_issues: true
+  has_projects: true
+  has_wiki: false
+  has_discussions: true
+
+  # إعدادات الأمان
+  allow_squash_merge: true
+  allow_merge_commit: false
+  allow_rebase_merge: true
+  allow_auto_merge: true
+  delete_branch_on_merge: true
+
+  # إعدادات الفروع الافتراضية
+  default_branch: main
+
+# ──────────────────────────────────────────────
+# حماية الفروع
+# ──────────────────────────────────────────────
+branches:
+  # حماية الفرع الرئيسي
+  - name: main
+    protection:
+      # حظر الدفع المباشر
+      enforce_admins: true
+      # طلب مراجعة الكود
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+        dismiss_stale_reviews: true
+        require_code_owner_reviews: true
+        require_last_push_approval: false
+      # الفحوص المطلوبة قبل الدمج
+      required_status_checks:
+        strict: true
+        checks:
+          - name: "ESLint Check"
+            context: "ESLint Check"
+          - name: "TypeScript Check"
+            context: "TypeScript Check"
+          - name: "Build Check"
+            context: "Build Check"
+      # قيود الدفع
+      restrictions:
+        # لا قيود على الأفراد
+        users: []
+        teams:
+          - "tron-maintainers"
+      # التوقيع المطلوب
+      required_signatures: false
+      # المحادثات المطلوبة
+      required_conversation_resolution: true
+      # دمج تلقائي
+      allow_force_pushes: false
+      allow_deletions: false
+
+  # حماية فرع التطوير
+  - name: develop
+    protection:
+      enforce_admins: false
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+        dismiss_stale_reviews: true
+        require_code_owner_reviews: false
+      required_status_checks:
+        strict: false
+        checks:
+          - name: "ESLint Check"
+            context: "ESLint Check"
+          - name: "Build Check"
+            context: "Build Check"
+      restrictions: null
+      required_conversation_resolution: true
+      allow_force_pushes: false
+      allow_deletions: false
+
+# ──────────────────────────────────────────────
+# تطبيق CODEOWNERS
+# ──────────────────────────────────────────────
+codeowners:
+  # تفعيل مراجعة CODEOWNERS
+  enabled: true
+  # تطبيق على طلبات السحب
+  enforce_on_pull_requests: true
+  # المسار لملف CODEOWNERS
+  file_path: ".github/CODEOWNERS"
+
+# ──────────────────────────────────────────────
+# قواعد التسمية
+# ──────────────────────────────────────────────
+labels:
+  # تسميات مطلوبة لكل طلب سحب
+  required_on_pull_requests: false
+  # التسميات المتاحة
+  predefined:
+    - name: "bug"
+      color: "d73a4a"
+    - name: "enhancement"
+      color: "a2eeef"
+    - name: "documentation"
+      color: "0075ca"
+    - name: "dependencies"
+      color: "0366d6"
+    - name: "security"
+      color: "b60205"
+    - name: "performance"
+      color: "fbca04"
+    - name: "automated"
+      color: "ede5f5"
+    - name: "good first issue"
+      color: "7057ff"
+
+# ──────────────────────────────────────────────
+# إعدادات المشاكل
+# ──────────────────────────────────────────────
+issues:
+  # تفعيل قوالب المشاكل
+  templates: true
+  # السماح بإنشاء مشاكل من المستخدمين
+  allow_public_issues: true
+  # إغلاق المشاكل القديمة تلقائياً
+  auto_close:
+    enabled: true
+    days_until_close: 60
+    label: "stale"
+    comment: |
+      🔔 هذه المشكلة لم تحصل على أي نشاط منذ {{days}} يوماً.
+      ستُغلق تلقائياً قريباً إذا لم يتم تحديثها.
+      إذا كانت لا تزال ذات صلة، يُرجى إضافة تعليق.
+
+# ──────────────────────────────────────────────
+# إعدادات طلبات السحب
+# ──────────────────────────────────────────────
+pull_requests:
+  # السماح بالمسودات
+  allow_draft_prs: true
+  # التحقق التلقائي من دمج الفرع
+  auto_merge_enabled: true
+  # إغلاق طلبات السحب القديمة
+  auto_close:
+    enabled: false
+
+# ──────────────────────────────────────────────
+# إعدادات الفرق
+# ──────────────────────────────────────────────
+teams:
+  - name: "tron-maintainers"
+    permission: "maintain"
+    members:
+      - "Kerim1230"
+  - name: "tron-developers"
+    permission: "push"
+    members:
+      - "Kerim1230"

@@ -1,0 +1,184 @@
+# سير عمل تقرير الرؤى الأسبوعي - TRON Σ
+# جمع إحصائيات المستودع ونشر ملخص أسبوعي
+
+name: Weekly Insights Report
+
+on:
+  schedule:
+    # كل يوم اثنين الساعة 9 صباحاً بتوقيت UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  discussions: write
+
+jobs:
+  # ──────────────────────────────────────────────
+  # وظيفة جمع الإحصائيات
+  # ──────────────────────────────────────────────
+  collect-stats:
+    name: 📊 جمع الإحصائيات
+    runs-on: ubuntu-latest
+    outputs:
+      report: ${{ steps.generate-report.outputs.report }}
+    steps:
+      - name: استخراج المستودع
+        uses: actions/checkout@v4
+
+      - name: جمع إحصائيات المستودع
+        # جمع كل الإحصائيات من GitHub API
+        id: generate-report
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            const since = oneWeekAgo.toISOString();
+
+            // ── إحصائيات المشاكل ──
+            const { data: issuesCreated } = await github.rest.issues.listForRepo({
+              owner, repo, state: 'all', since, sort: 'created', direction: 'desc', per_page: 100
+            });
+
+            const newIssues = issuesCreated.filter(i =>
+              new Date(i.created_at) >= new Date(since) && !i.pull_request
+            );
+
+            const closedIssues = issuesCreated.filter(i =>
+              i.state === 'closed' && !i.pull_request &&
+              new Date(i.closed_at) >= new Date(since)
+            );
+
+            // ── إحصائيات طلبات السحب ──
+            const { data: prsCreated } = await github.rest.pulls.list({
+              owner, repo, state: 'all', sort: 'created', direction: 'desc', per_page: 100
+            });
+
+            const newPRs = prsCreated.filter(pr =>
+              new Date(pr.created_at) >= new Date(since)
+            );
+
+            const mergedPRs = prsCreated.filter(pr =>
+              pr.merged_at && new Date(pr.merged_at) >= new Date(since)
+            );
+
+            // ── إحصائيات الالتزامات ──
+            const { data: commits } = await github.rest.repos.listCommits({
+              owner, repo, since, per_page: 100
+            });
+
+            // ── إحصائيات المساهمين ──
+            const contributors = new Set(commits.map(c => c.author?.login).filter(Boolean));
+
+            // ── إحصائيات النجوم والفروع ──
+            const { data: repoData } = await github.rest.repos.get({ owner, repo });
+
+            // ── حساب التصنيفات ──
+            const labelCounts = {};
+            newIssues.forEach(issue => {
+              issue.labels.forEach(label => {
+                labelCounts[label.name] = (labelCounts[label.name] || 0) + 1;
+              });
+            });
+
+            // ترتيب التصنيفات حسب العدد
+            const sortedLabels = Object.entries(labelCounts)
+              .sort((a, b) => b[1] - a[1])
+              .slice(0, 5);
+
+            // ── إنشاء التقرير ──
+            const weekStart = oneWeekAgo.toLocaleDateString('ar-SA');
+            const weekEnd = new Date().toLocaleDateString('ar-SA');
+
+            let report = `# 📊 تقرير الرؤى الأسبوعي - TRON Σ\n\n`;
+            report += `**الفترة**: ${weekStart} → ${weekEnd}\n\n`;
+
+            report += `## 📈 ملخص سريع\n`;
+            report += `| المقياس | القيمة |\n`;
+            report += `|---------|--------|\n`;
+            report += `| ⭐ النجوم | ${repoData.stargazers_count} |\n`;
+            report += `| 🍴 الفروع | ${repoData.forks_count} |\n`;
+            report += `| 👁️ المراقبون | ${repoData.subscribers_count} |\n`;
+            report += `| 📝 الالتزامات هذا الأسبوع | ${commits.length} |\n`;
+            report += `| 👥 المساهمون النشطون | ${contributors.size} |\n`;
+            report += `| 🐛 مشاكل جديدة | ${newIssues.length} |\n`;
+            report += `| ✅ مشاكل مغلقة | ${closedIssues.length} |\n`;
+            report += `| 🔀 طلبات سحب جديدة | ${newPRs.length} |\n`;
+            report += `| 🔀 طلبات سحب مدمجة | ${mergedPRs.length} |\n\n`;
+
+            // نسبة إغلاق المشاكل
+            const closeRate = newIssues.length > 0
+              ? Math.round((closedIssues.length / newIssues.length) * 100)
+              : 100;
+
+            report += `## 📊 مؤشرات الأداء\n`;
+            report += `- **نسبة إغلاق المشاكل**: ${closeRate}%\n`;
+            report += `- **متوسط الالتزامات اليومية**: ${(commits.length / 7).toFixed(1)}\n\n`;
+
+            if (sortedLabels.length > 0) {
+              report += `## 🏷️ أكثر التصنيفات استخداماً\n`;
+              sortedLabels.forEach(([label, count]) => {
+                report += `- \`${label}\`: ${count} مشاكل\n`;
+              });
+              report += '\n';
+            }
+
+            if (contributors.size > 0) {
+              report += `## 👥 المساهمون هذا الأسبوع\n`;
+              [...contributors].forEach(c => {
+                report += `- @${c}\n`;
+              });
+              report += '\n';
+            }
+
+            report += `## 💡 توصيات\n`;
+            if (closedIssues.length < newIssues.length) {
+              report += `- ⚠️ عدد المشاكل الجديدة يتجاوز المغلقة. يُنصح بالتركيز على حل المشاكل المفتوحة.\n`;
+            }
+            if (commits.length < 10) {
+              report += `- 💡 نشاط التطوير منخفض هذا الأسبوع. حاول زيادة وتيرة المساهمات.\n`;
+            }
+            report += `- 🔄 لا تنسَ مراجعة طلبات السحب المعلقة.\n\n`;
+
+            report += `---\n*تم إنشاء هذا التقرير تلقائياً بواسطة TRON Σ Insights Bot*\n`;
+
+            core.setOutput('report', report);
+
+  # ──────────────────────────────────────────────
+  # وظيفة نشر التقرير
+  # ──────────────────────────────────────────────
+  post-report:
+    name: 📝 نشر التقرير
+    runs-on: ubuntu-latest
+    needs: collect-stats
+    steps:
+      - name: إنشاء مناقشة بالتقرير
+        # نشر التقرير كمناقشة في المستودع
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const report = `${{ needs.collect-stats.outputs.report }}`;
+            const date = new Date().toLocaleDateString('ar-SA');
+
+            // إنشاء مشكلة بالتقرير الأسبوعي
+            const { data: issue } = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `📊 تقرير الرؤى الأسبوعي - ${date}`,
+              body: report,
+              labels: ['insights', 'automated', 'weekly-report']
+            });
+
+            console.log(`✅ تم نشر التقرير الأسبوعي: ${issue.html_url}`);
+
+            // إغلاق المشكلة تلقائياً لأنها تقرير
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              state: 'closed'
+            });

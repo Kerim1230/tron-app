@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRON Σ — التوثيق الرسمي</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            tajawal: ['Tajawal', 'sans-serif'],
+          },
+          colors: {
+            tron: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+              950: '#052e16',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Tajawal', sans-serif; }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #22c55e, #16a34a, #059669);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-gradient {
+      background: linear-gradient(135deg, #052e16 0%, #14532d 30%, #166534 60%, #15803d 100%);
+    }
+    .feature-icon {
+      transition: transform 0.3s ease;
+    }
+    .feature-icon:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+    .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      right: 0;
+      width: 0;
+      height: 2px;
+      background: #22c55e;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    .scroll-smooth { scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #22c55e; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900 scroll-smooth">
+
+  <!-- شريط التنقل -->
+  <nav class="sticky top-0 z-50 glass-card shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- الشعار -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-tron-600 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+            Σ
+          </div>
+          <span class="text-xl font-bold gradient-text">TRON Σ</span>
+        </div>
+
+        <!-- روابط التنقل -->
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#home" class="nav-link text-gray-700 hover:text-tron-600 font-medium">الرئيسية</a>
+          <a href="#features" class="nav-link text-gray-700 hover:text-tron-600 font-medium">الميزات</a>
+          <a href="#quickstart" class="nav-link text-gray-700 hover:text-tron-600 font-medium">البدء السريع</a>
+          <a href="#architecture" class="nav-link text-gray-700 hover:text-tron-600 font-medium">البنية</a>
+          <a href="#api" class="nav-link text-gray-700 hover:text-tron-600 font-medium">API</a>
+          <a href="#community" class="nav-link text-gray-700 hover:text-tron-600 font-medium">المجتمع</a>
+        </div>
+
+        <!-- أزرار -->
+        <div class="flex items-center gap-3">
+          <a href="https://github.com/tron-sigma/smart-browser" target="_blank"
+             class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- قائمة الجوال -->
+    <div id="mobileMenu" class="hidden md:hidden border-t border-gray-200 bg-white">
+      <div class="px-4 py-3 space-y-2">
+        <a href="#home" class="block py-2 px-3 rounded-lg text-gray-700 hover:bg-tron-50 hover:text-tron-700 font-medium">الرئيسية</a>
+        <a href="#features" class="block py-2 px-3 rounded-lg text-gray-700 hover:bg-tron-50 hover:text-tron-700 font-medium">الميزات</a>
+        <a href="#quickstart" class="block py-2 px-3 rounded-lg text-gray-700 hover:bg-tron-50 hover:text-tron-700 font-medium">البدء السريع</a>
+        <a href="#architecture" class="block py-2 px-3 rounded-lg text-gray-700 hover:bg-tron-50 hover:text-tron-700 font-medium">البنية</a>
+        <a href="#api" class="block py-2 px-3 rounded-lg text-gray-700 hover:bg-tron-50 hover:text-tron-700 font-medium">API</a>
+        <a href="#community" class="block py-2 px-3 rounded-lg text-gray-700 hover:bg-tron-50 hover:text-tron-700 font-medium">المجتمع</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- القسم الرئيسي -->
+  <section id="home" class="hero-gradient text-white py-20 lg:py-32">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm mb-8">
+          <span class="w-2 h-2 rounded-full bg-tron-400 animate-pulse"></span>
+          الإصدار 1.0.0 — متاح الآن
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-7xl font-black mb-6 leading-tight">
+          TRON <span class="text-tron-400">Σ</span>
+        </h1>
+        <p class="text-xl sm:text-2xl lg:text-3xl font-light text-tron-100 mb-4">
+          المتصفح الذكي من الجيل القادم
+        </p>
+        <p class="text-lg text-tron-200 max-w-2xl mx-auto mb-10">
+          تجربة تصفح فائقة السرعة مع مساعد ذكاء اصطناعي مدمج، خصوصية متقدمة، ودعم أصلي كامل للغة العربية
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="#quickstart" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-tron-900 font-bold text-lg hover:bg-tron-50 transition-colors shadow-lg">
+            🚀 ابدأ الآن
+          </a>
+          <a href="#features" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/10 border border-white/20 text-white font-bold text-lg hover:bg-white/20 transition-colors">
+            ✨ استكشف الميزات
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- الميزات -->
+  <section id="features" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-black text-gray-900 mb-4">ميزات قوية لتجربة استثنائية</h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">اكتشف ما يجعل TRON Σ الخيار الأفضل للتصفح الذكي</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- ميزة 1 -->
+        <div class="group p-8 rounded-2xl border border-gray-100 hover:border-tron-200 hover:shadow-xl transition-all duration-300 bg-white">
+          <div class="feature-icon w-14 h-14 rounded-xl bg-tron-50 flex items-center justify-center text-2xl mb-6">🧠</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-tron-700 transition-colors">مساعد ذكي مدمج</h3>
+          <p class="text-gray-600 leading-relaxed">تلخيص الصفحات، ترجمة المحتوى، والإجابة على أسئلتك — كل ذلك مدمج مباشرة في المتصفح بدون إضافات خارجية.</p>
+        </div>
+
+        <!-- ميزة 2 -->
+        <div class="group p-8 rounded-2xl border border-gray-100 hover:border-tron-200 hover:shadow-xl transition-all duration-300 bg-white">
+          <div class="feature-icon w-14 h-14 rounded-xl bg-tron-50 flex items-center justify-center text-2xl mb-6">🛡️</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-tron-700 transition-colors">خصوصية متقدمة</h3>
+          <p class="text-gray-600 leading-relaxed">حظر المتتبعات تلقائيًا، وضع التصفح الخاص المحسّن، DNS مشفر، وحماية بصمة المتصفح من التتبع.</p>
+        </div>
+
+        <!-- ميزة 3 -->
+        <div class="group p-8 rounded-2xl border border-gray-100 hover:border-tron-200 hover:shadow-xl transition-all duration-300 bg-white">
+          <div class="feature-icon w-14 h-14 rounded-xl bg-tron-50 flex items-center justify-center text-2xl mb-6">⚡</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-tron-700 transition-colors">أداء فائق السرعة</h3>
+          <p class="text-gray-600 leading-relaxed">محرك عرض سريع مع تحميل كسول ذكي، إدارة ذاكرة متقدمة، وتجميد التبويبات غير النشطة تلقائيًا.</p>
+        </div>
+
+        <!-- ميزة 4 -->
+        <div class="group p-8 rounded-2xl border border-gray-100 hover:border-tron-200 hover:shadow-xl transition-all duration-300 bg-white">
+          <div class="feature-icon w-14 h-14 rounded-xl bg-tron-50 flex items-center justify-center text-2xl mb-6">🌐</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-tron-700 transition-colors">دعم عربي أصلي</h3>
+          <p class="text-gray-600 leading-relaxed">واجهة كاملة باللغة العربية مع دعم RTL أصلي، محرك بحث مخصص، وخطوط عربية محسّنة.</p>
+        </div>
+
+        <!-- ميزة 5 -->
+        <div class="group p-8 rounded-2xl border border-gray-100 hover:border-tron-200 hover:shadow-xl transition-all duration-300 bg-white">
+          <div class="feature-icon w-14 h-14 rounded-xl bg-tron-50 flex items-center justify-center text-2xl mb-6">🎨</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-tron-700 transition-colors">تخصيص مرن</h3>
+          <p class="text-gray-600 leading-relaxed">سمات متعددة، تخطيطات قابلة للتخصيص، إضافات قوية، وشريط أدوات قابل للتعديل بالكامل.</p>
+        </div>
+
+        <!-- ميزة 6 -->
+        <div class="group p-8 rounded-2xl border border-gray-100 hover:border-tron-200 hover:shadow-xl transition-all duration-300 bg-white">
+          <div class="feature-icon w-14 h-14 rounded-xl bg-tron-50 flex items-center justify-center text-2xl mb-6">🔄</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-tron-700 transition-colors">مزامنة سلسة</h3>
+          <p class="text-gray-600 leading-relaxed">مزامنة عبر جميع أجهزتك مع تشفير من طرف إلى طرف — تبويبات، إشارات مرجعية، وإعدادات.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- البدء السريع -->
+  <section id="quickstart" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-black text-gray-900 mb-4">ابدأ في دقائق</h2>
+        <p class="text-lg text-gray-600">ثلاث خطوات بسيطة لإعداد TRON Σ</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- الخطوة 1 -->
+        <div class="relative p-8 rounded-2xl bg-white shadow-sm border border-gray-100">
+          <div class="absolute -top-4 -right-4 w-10 h-10 rounded-full bg-tron-600 text-white flex items-center justify-center font-bold text-lg shadow-lg">1</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-4 mt-2">استنساخ وتثبيت</h3>
+          <div class="bg-gray-900 rounded-xl p-4 text-sm text-tron-400 font-mono leading-relaxed" dir="ltr">
+            <p class="text-gray-500"># استنساخ المستودع</p>
+            <p>git clone https://github.com/<wbr>tron-sigma/smart-browser.git</p>
+            <p>cd smart-browser</p>
+            <p class="text-gray-500 mt-2"># تثبيت التبعيات</p>
+            <p>bun install</p>
+          </div>
+        </div>
+
+        <!-- الخطوة 2 -->
+        <div class="relative p-8 rounded-2xl bg-white shadow-sm border border-gray-100">
+          <div class="absolute -top-4 -right-4 w-10 h-10 rounded-full bg-tron-600 text-white flex items-center justify-center font-bold text-lg shadow-lg">2</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-4 mt-2">إعداد البيئة</h3>
+          <div class="bg-gray-900 rounded-xl p-4 text-sm text-tron-400 font-mono leading-relaxed" dir="ltr">
+            <p class="text-gray-500"># متغيرات البيئة</p>
+            <p>cp .env.example .env.local</p>
+            <p class="text-gray-500 mt-2"># قاعدة البيانات</p>
+            <p>bun run db:push</p>
+          </div>
+        </div>
+
+        <!-- الخطوة 3 -->
+        <div class="relative p-8 rounded-2xl bg-white shadow-sm border border-gray-100">
+          <div class="absolute -top-4 -right-4 w-10 h-10 rounded-full bg-tron-600 text-white flex items-center justify-center font-bold text-lg shadow-lg">3</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-4 mt-2">تشغيل الخادم</h3>
+          <div class="bg-gray-900 rounded-xl p-4 text-sm text-tron-400 font-mono leading-relaxed" dir="ltr">
+            <p class="text-gray-500"># تشغيل التطوير</p>
+            <p>bun run dev</p>
+            <p class="text-gray-500 mt-2"># أو استخدم TRON CLI</p>
+            <p>tron status</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- البنية التقنية -->
+  <section id="architecture" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-black text-gray-900 mb-4">بنية تقنية متينة</h2>
+        <p class="text-lg text-gray-600">مبنية بأحدث التقنيات وأفضل الممارسات</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="flex flex-col items-center p-6 rounded-xl bg-gray-50 border border-gray-100 hover:border-tron-200 transition-colors">
+          <div class="text-3xl mb-3">⚛️</div>
+          <span class="font-bold text-gray-900 text-sm">Next.js 16</span>
+          <span class="text-xs text-gray-500">إطار العمل</span>
+        </div>
+        <div class="flex flex-col items-center p-6 rounded-xl bg-gray-50 border border-gray-100 hover:border-tron-200 transition-colors">
+          <div class="text-3xl mb-3">🔷</div>
+          <span class="font-bold text-gray-900 text-sm">TypeScript</span>
+          <span class="text-xs text-gray-500">اللغة</span>
+        </div>
+        <div class="flex flex-col items-center p-6 rounded-xl bg-gray-50 border border-gray-100 hover:border-tron-200 transition-colors">
+          <div class="text-3xl mb-3">🎨</div>
+          <span class="font-bold text-gray-900 text-sm">Tailwind CSS</span>
+          <span class="text-xs text-gray-500">التنسيق</span>
+        </div>
+        <div class="flex flex-col items-center p-6 rounded-xl bg-gray-50 border border-gray-100 hover:border-tron-200 transition-colors">
+          <div class="text-3xl mb-3">🗄️</div>
+          <span class="font-bold text-gray-900 text-sm">Prisma</span>
+          <span class="text-xs text-gray-500">قاعدة البيانات</span>
+        </div>
+        <div class="flex flex-col items-center p-6 rounded-xl bg-gray-50 border border-gray-100 hover:border-tron-200 transition-colors">
+          <div class="text-3xl mb-3">🧩</div>
+          <span class="font-bold text-gray-900 text-sm">shadcn/ui</span>
+          <span class="text-xs text-gray-500">المكونات</span>
+        </div>
+        <div class="flex flex-col items-center p-6 rounded-xl bg-gray-50 border border-gray-100 hover:border-tron-200 transition-colors">
+          <div class="text-3xl mb-3">🐻</div>
+          <span class="font-bold text-gray-900 text-sm">Zustand</span>
+          <span class="text-xs text-gray-500">إدارة الحالة</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API نظرة عامة -->
+  <section id="api" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-black text-gray-900 mb-4">واجهة برمجة التطبيقات</h2>
+        <p class="text-lg text-gray-600">API قوي ومرن لبناء التطبيقات والإضافات</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="px-3 py-1 rounded-lg bg-green-100 text-green-700 text-sm font-bold font-mono" dir="ltr">GET</span>
+            <span class="font-mono text-gray-900 font-medium" dir="ltr">/api/tabs</span>
+          </div>
+          <p class="text-gray-600 text-sm">استرجاع جميع التبويبات المفتوحة مع معلومات الحالة والموقع</p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="px-3 py-1 rounded-lg bg-blue-100 text-blue-700 text-sm font-bold font-mono" dir="ltr">POST</span>
+            <span class="font-mono text-gray-900 font-medium" dir="ltr">/api/tabs</span>
+          </div>
+          <p class="text-gray-600 text-sm">إنشاء تبويب جديد مع تحديد عنوان URL والإعدادات</p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="px-3 py-1 rounded-lg bg-green-100 text-green-700 text-sm font-bold font-mono" dir="ltr">GET</span>
+            <span class="font-mono text-gray-900 font-medium" dir="ltr">/api/ai/summarize</span>
+          </div>
+          <p class="text-gray-600 text-sm">تلخيص محتوى صفحة ويب باستخدام الذكاء الاصطناعي</p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="px-3 py-1 rounded-lg bg-blue-100 text-blue-700 text-sm font-bold font-mono" dir="ltr">POST</span>
+            <span class="font-mono text-gray-900 font-medium" dir="ltr">/api/ai/translate</span>
+          </div>
+          <p class="text-gray-600 text-sm">ترجمة محتوى نصي بين اللغات المدعومة</p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="px-3 py-1 rounded-lg bg-yellow-100 text-yellow-700 text-sm font-bold font-mono" dir="ltr">PUT</span>
+            <span class="font-mono text-gray-900 font-medium" dir="ltr">/api/settings</span>
+          </div>
+          <p class="text-gray-600 text-sm">تحديث إعدادات المتصفح والتفضيلات الشخصية</p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="px-3 py-1 rounded-lg bg-red-100 text-red-700 text-sm font-bold font-mono" dir="ltr">DELETE</span>
+            <span class="font-mono text-gray-900 font-medium" dir="ltr">/api/history/:id</span>
+          </div>
+          <p class="text-gray-600 text-sm">حذف عنصر محدد من سجل التصفح</p>
+        </div>
+      </div>
+
+      <div class="text-center mt-10">
+        <a href="https://github.com/tron-sigma/smart-browser/wiki/API-Reference" class="inline-flex items-center gap-2 text-tron-600 font-bold hover:text-tron-700 transition-colors">
+          عرض التوثيق الكامل لـ API ←
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- المجتمع -->
+  <section id="community" class="py-20 hero-gradient text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl sm:text-4xl font-black mb-4">انضم لمجتمع TRON Σ</h2>
+      <p class="text-lg text-tron-200 max-w-2xl mx-auto mb-12">تواصل مع مطورين وشغوفين بالتكنولوجيا من العالم العربي</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+        <a href="https://discord.gg/tron-sigma" class="p-6 rounded-2xl bg-white/10 border border-white/20 hover:bg-white/20 transition-colors">
+          <div class="text-3xl mb-3">💬</div>
+          <h3 class="font-bold text-lg mb-1">Discord</h3>
+          <p class="text-sm text-tron-200">دردشة مباشرة ودعم فني</p>
+        </a>
+        <a href="https://github.com/tron-sigma/smart-browser/discussions" class="p-6 rounded-2xl bg-white/10 border border-white/20 hover:bg-white/20 transition-colors">
+          <div class="text-3xl mb-3">💭</div>
+          <h3 class="font-bold text-lg mb-1">النقاشات</h3>
+          <p class="text-sm text-tron-200">أفكار ونقاشات تقنية</p>
+        </a>
+        <a href="https://twitter.com/TRONSigma" class="p-6 rounded-2xl bg-white/10 border border-white/20 hover:bg-white/20 transition-colors">
+          <div class="text-3xl mb-3">🐦</div>
+          <h3 class="font-bold text-lg mb-1">تويتر</h3>
+          <p class="text-sm text-tron-200">آخر الأخبار والتحديثات</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- التذييل -->
+  <footer class="bg-gray-900 text-gray-400 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-tron-600 flex items-center justify-center text-white font-bold text-sm">Σ</div>
+            <span class="text-white font-bold">TRON Σ</span>
+          </div>
+          <p class="text-sm leading-relaxed">المتصفح الذكي من الجيل القادم. صُنع بـ ❤️ لمجتمع الويب العربي.</p>
+        </div>
+        <div>
+          <h4 class="text-white font-bold mb-4">المنتج</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#features" class="hover:text-tron-400 transition-colors">الميزات</a></li>
+            <li><a href="#" class="hover:text-tron-400 transition-colors">التحميل</a></li>
+            <li><a href="#" class="hover:text-tron-400 transition-colors">التسعير</a></li>
+            <li><a href="#" class="hover:text-tron-400 transition-colors">خريطة الطريق</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold mb-4">المطورون</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#api" class="hover:text-tron-400 transition-colors">API</a></li>
+            <li><a href="#quickstart" class="hover:text-tron-400 transition-colors">البدء السريع</a></li>
+            <li><a href="#" class="hover:text-tron-400 transition-colors">الأدلة</a></li>
+            <li><a href="#" class="hover:text-tron-400 transition-colors">الحالة</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold mb-4">المجتمع</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="https://discord.gg/tron-sigma" class="hover:text-tron-400 transition-colors">Discord</a></li>
+            <li><a href="https://github.com/tron-sigma/smart-browser" class="hover:text-tron-400 transition-colors">GitHub</a></li>
+            <li><a href="https://twitter.com/TRONSigma" class="hover:text-tron-400 transition-colors">تويتر</a></li>
+            <li><a href="#" class="hover:text-tron-400 transition-colors">المدونة</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-10 pt-8 text-center text-sm">
+        <p>© 2024 TRON Σ. جميع الحقوق محفوظة. مرخص تحت رخصة MIT.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // قائمة الجوال
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    });
+
+    // إغلاق قائمة الجوال عند النقر على رابط
+    document.querySelectorAll('#mobileMenu a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('mobileMenu').classList.add('hidden');
+      });
+    });
+
+    // تمرير سلس
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
