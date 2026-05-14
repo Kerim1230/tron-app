@@ -111,7 +111,7 @@ export const useAppStore = create<AppStore>((set) => ({
     error: null,
   },
   chatMessages: [],
-  chatModel: 'gpt-4o-mini',
+  chatModel: 'deepseek/deepseek-chat-v3-0324:free',
   chatLoading: false,
   skills: defaultSkills,
 

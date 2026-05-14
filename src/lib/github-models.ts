@@ -46,7 +46,7 @@ export type SupportedModel = (typeof SUPPORTED_MODELS)[keyof typeof SUPPORTED_MO
 const DEFAULT_MODEL = SUPPORTED_MODELS.GPT4O_MINI;
 
 /** نقطة نهاية GitHub Models API */
-const GITHUB_MODELS_ENDPOINT = "https://models.inference.ai.azure.com/chat/completions";
+const GITHUB_MODELS_ENDPOINT = "https://models.github.ai/inference/chat/completions";
 
 /**
  * الحصول على رمز المصادقة من متغيرات البيئة

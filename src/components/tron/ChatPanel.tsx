@@ -8,10 +8,10 @@ import { Send, Bot, User, Loader2, Sparkles } from 'lucide-react';
 // ─── Model Definitions ────────────────────────────────────────────────────────
 
 const AI_MODELS = [
+  { id: 'deepseek/deepseek-chat-v3-0324:free', label: 'DeepSeek V3' },
   { id: 'gpt-4o-mini', label: 'GPT-4o Mini' },
-  { id: 'claude-3.5-sonnet', label: 'Claude 3.5' },
-  { id: 'gemini-pro', label: 'Gemini Pro' },
-  { id: 'llama-3.1-70b', label: 'Llama 3.1' },
+  { id: 'deepseek/deepseek-r1:free', label: 'DeepSeek R1' },
+  { id: 'meta-llama/llama-3.3-70b-instruct:free', label: 'Llama 3.3' },
 ] as const;
 
 // ─── Quick Action Definitions ─────────────────────────────────────────────────
@@ -198,10 +198,25 @@ export default function ChatPanel() {
 
       const data = await res.json();
 
+      // التحقق من وجود خطأ في الاستجابة
+      if (data.error) {
+        const errorMsg = {
+          id: `msg-${Date.now()}-error`,
+          role: 'assistant' as const,
+          content: `⚠️ ${data.error}`,
+          timestamp: Date.now(),
+        };
+        addChatMessage(errorMsg);
+        return;
+      }
+
+      // استخراج رد AI - دعم عدة تنسيقات
+      const aiContent = data.response || data.reply || data.message || data.content || 'لم أتمكن من معالجة الطلب.';
+
       const assistantMsg = {
         id: `msg-${Date.now()}-assistant`,
         role: 'assistant' as const,
-        content: data.reply || data.message || data.content || 'لم أتمكن من معالجة الطلب.',
+        content: aiContent,
         timestamp: Date.now(),
       };
       addChatMessage(assistantMsg);
@@ -209,7 +224,7 @@ export default function ChatPanel() {
       const errorMsg = {
         id: `msg-${Date.now()}-error`,
         role: 'assistant' as const,
-        content: `حدث خطأ أثناء الاتصال بالمساعد. يرجى المحاولة مرة أخرى.`,
+        content: `❌ حدث خطأ أثناء الاتصال بالمساعد. يرجى المحاولة مرة أخرى.`,
         timestamp: Date.now(),
       };
       addChatMessage(errorMsg);
