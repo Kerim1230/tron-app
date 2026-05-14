@@ -192,18 +192,18 @@ export default function ChatPanel() {
         }),
       });
 
-      if (!res.ok) {
-        throw new Error(`خطأ في الخادم: ${res.status}`);
-      }
+      // قراءة الاستجابة دائماً حتى لو كانت حالة الخطأ
+      const data = await res.json().catch(() => null);
 
-      const data = await res.json();
-
-      // التحقق من وجود خطأ في الاستجابة
-      if (data.error) {
+      // التحقق من وجود خطأ في الاستجابة (سواء حالة HTTP أو حقل error)
+      if (!res.ok || data?.error) {
+        const errorMessage = data?.error
+          ? `⚠️ ${data.error}`
+          : `⚠️ خطأ في الخادم (${res.status}). يرجى المحاولة لاحقاً.`;
         const errorMsg = {
           id: `msg-${Date.now()}-error`,
           role: 'assistant' as const,
-          content: `⚠️ ${data.error}`,
+          content: errorMessage,
           timestamp: Date.now(),
         };
         addChatMessage(errorMsg);
@@ -211,7 +211,7 @@ export default function ChatPanel() {
       }
 
       // استخراج رد AI - دعم عدة تنسيقات
-      const aiContent = data.response || data.reply || data.message || data.content || 'لم أتمكن من معالجة الطلب.';
+      const aiContent = data?.response || data?.reply || data?.message || data?.content || 'لم أتمكن من معالجة الطلب.';
 
       const assistantMsg = {
         id: `msg-${Date.now()}-assistant`,

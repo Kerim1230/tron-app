@@ -14,7 +14,7 @@ interface RepoStats {
   issues: number;
   prs: number;
   contributors: number;
-  languages: Record<string, number>;
+  languages: Array<{ name: string; percentage: number; color?: string }> | Record<string, number>;
 }
 
 interface ActivityEvent {
@@ -332,8 +332,8 @@ export default function GitHubPanel() {
                 {[
                   { icon: '⭐', label: 'النجوم', value: stats?.stars ?? 0, color: '#00f0ff' },
                   { icon: '🍴', label: 'الشوك', value: stats?.forks ?? 0, color: '#ff00aa' },
-                  { icon: '📋', label: 'المشاكل', value: stats?.issues ?? 0, color: '#ff6b35' },
-                  { icon: '🔀', label: 'طلبات الدمج', value: stats?.prs ?? 0, color: '#7b61ff' },
+                  { icon: '📋', label: 'المشاكل', value: stats?.openIssues ?? stats?.issues ?? 0, color: '#ff6b35' },
+                  { icon: '🔀', label: 'طلبات الدمج', value: stats?.openPRs ?? stats?.prs ?? 0, color: '#7b61ff' },
                 ].map((item, index) => (
                   <motion.div
                     key={item.label}
@@ -359,11 +359,28 @@ export default function GitHubPanel() {
               <div>
                 <h3 className="tron-label mb-3">توزيع اللغات البرمجية</h3>
                 <div className="space-y-2.5">
-                  {Object.entries(stats?.languages ?? SIMULATED_STATS.languages)
-                    .sort(([, a], [, b]) => b - a)
-                    .map(([lang, pct], index) => (
+                  {(() => {
+                    // دعم تنسيقين: مصفوفة من الكائنات أو كائن Record
+                    const langs = stats?.languages ?? SIMULATED_STATS.languages;
+                    const langEntries: Array<{ name: string; percentage: number; color: string }> = Array.isArray(langs)
+                      ? langs.map((l: { name?: string; language?: string; percentage: number; color?: string }) => ({
+                          name: l.name || l.language || '',
+                          percentage: l.percentage,
+                          color: l.color || LANGUAGE_COLORS[l.name || l.language || ''] || '#888',
+                        }))
+                      : Object.entries(langs as Record<string, number>)
+                          .sort(([, a], [, b]) => b - a)
+                          .map(([name, pct]) => ({
+                            name,
+                            percentage: pct as number,
+                            color: LANGUAGE_COLORS[name] || '#888',
+                          }));
+
+                    return langEntries
+                      .sort((a, b) => b.percentage - a.percentage)
+                      .map((lang, index) => (
                       <motion.div
-                        key={lang}
+                        key={lang.name}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.06, duration: 0.25 }}
@@ -373,26 +390,27 @@ export default function GitHubPanel() {
                           <div className="flex items-center gap-1.5">
                             <span
                               className="inline-block w-2.5 h-2.5 rounded-sm"
-                              style={{ backgroundColor: LANGUAGE_COLORS[lang] || '#888' }}
+                              style={{ backgroundColor: lang.color }}
                             />
-                            <span className="text-tron-cyan">{lang}</span>
+                            <span className="text-tron-cyan">{lang.name}</span>
                           </div>
-                          <span className="text-tron-muted font-mono rtl-numbers">{pct}%</span>
+                          <span className="text-tron-muted font-mono rtl-numbers">{lang.percentage}%</span>
                         </div>
                         <div className="h-1.5 bg-[rgba(0,240,255,0.06)] rounded-full overflow-hidden">
                           <motion.div
                             className="h-full rounded-full"
                             style={{
-                              backgroundColor: LANGUAGE_COLORS[lang] || '#888',
-                              boxShadow: `0 0 6px ${LANGUAGE_COLORS[lang] || '#888'}40`,
+                              backgroundColor: lang.color,
+                              boxShadow: `0 0 6px ${lang.color}40`,
                             }}
                             initial={{ width: '0%' }}
-                            animate={{ width: `${pct}%` }}
+                            animate={{ width: `${lang.percentage}%` }}
                             transition={{ delay: 0.3 + index * 0.08, duration: 0.6, ease: 'easeOut' }}
                           />
                         </div>
                       </motion.div>
-                    ))}
+                    ));
+                  })()}
                 </div>
               </div>
 
